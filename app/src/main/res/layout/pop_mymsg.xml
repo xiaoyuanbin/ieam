@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/bg_tab"
+        >
+        <Button
+
+            android:id="@+id/msg_btn_back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/back"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="编辑"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+
+            android:gravity="center"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pop_msg_ll_photo"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:gravity="center">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:text="头像"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/black"/>
+        <ImageView
+            android:id="@+id/pop_msg_img_photo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+
+            android:layout_marginRight="20dp"/>
+
+
+
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+
+        android:layout_height="1dp"
+
+        android:layout_marginLeft="15dp"
+
+        android:layout_marginRight="15dp"
+
+        android:background="#90909090" />
+    <LinearLayout
+        android:id="@+id/pop_msg_ll_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:gravity="center">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="17sp"
+            android:text="姓名"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/pop_msg_tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="15sp"
+            android:text="狗蛋"
+            android:gravity="right"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="20dp"
+            />
+
+
+
+
+    </LinearLayout>
+    <TextView
+    android:layout_width="match_parent"
+
+    android:layout_height="1dp"
+
+    android:layout_marginLeft="15dp"
+
+    android:layout_marginRight="15dp"
+
+    android:background="#90909090" />
+    <LinearLayout
+        android:id="@+id/pop_msg_ll_firm"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:gravity="center">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="17sp"
+            android:text="所属单位"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/pop_msg_tv_firm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="15sp"
+            android:text="金信源公司"
+            android:gravity="right"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="20dp"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

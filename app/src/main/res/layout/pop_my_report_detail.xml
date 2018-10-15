@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/bg_tab"
+
+        >
+        <Button
+            android:id="@+id/pop_my_report_detail_btn_back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/back"
+            android:layout_marginLeft="10dp"
+            />
+        <TextView
+            android:id="@+id/pop_my_report_detail_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="双流区中德英伦联邦C区2栋1单元2楼2"
+            android:ellipsize="marquee"
+            android:textSize="18sp"
+            android:focusable="true"
+            android:layout_marginRight="15dp"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:focusableInTouchMode="true"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:gravity="center|left"
+            />
+
+    </LinearLayout>
+    <GridView
+        android:id="@+id/pop_my_report_detail_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="4"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15sp"
+
+        android:minHeight="100dp"
+        android:verticalSpacing="5dp"
+        android:horizontalSpacing="5dp"
+        ></GridView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:layout_marginTop="10dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="报修单位:"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="20dp"/>
+        <TextView
+
+            android:id="@+id/pop_my_report_detail_firm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="金信源公司"
+            android:layout_marginStart="5dp"
+            android:textSize="15sp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="2dp" />
+        <Button
+
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/go"
+            android:layout_marginRight="3dp"
+
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="报修类型:"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="20dp"/>
+        <TextView
+
+            android:id="@+id/pop_my_report_detail_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="土建工程"
+            android:layout_marginLeft="5dp"
+            android:textSize="15sp"
+            android:layout_marginRight="2dp" />
+        <Button
+
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/go"
+            android:layout_marginRight="3dp"
+
+
+            />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="报修时间:"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="20dp"/>
+        <TextView
+
+            android:id="@+id/pop_my_report_detail_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="2018/8/5"
+            android:textSize="15sp"
+            android:layout_marginLeft="5dp"
+
+            android:layout_marginRight="2dp"
+            />
+        <Button
+
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/go"
+            android:layout_marginRight="3dp"
+
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:background="@color/white">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="报修部位:"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="20dp"/>
+
+        <TextView
+
+            android:id="@+id/pop_my_report_detail_position"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:maxLines="5"
+            android:layout_marginStart="20dp"
+            android:text="墙脱落，周围大块面积出现墙面脱落，需要重新粉刷,大概有10平方左右，并且上面有些潮湿，会往下漏水"
+            android:layout_marginLeft="20dp"
+            android:layout_marginEnd="15dp"
+            android:textSize="15sp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="15dp"/>
+    </LinearLayout>
+    <!--<LinearLayout-->
+        <!--android:id="@+id/pop_my_report_detail_ll_write"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:background="@color/white"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--&gt;-->
+        <!--<ImageView-->
+            <!--android:layout_width="20dp"-->
+            <!--android:layout_height="20dp"-->
+            <!--android:background="@drawable/write"-->
+            <!--android:layout_marginLeft="20dp" />-->
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+
+            <!--android:text="报修填写"-->
+            <!--android:textSize="16sp"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:layout_marginLeft="10dp" />-->
+        <!--<TextView-->
+
+            <!--android:id="@+id/pop_my_report_detail_write"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="right|center_vertical"-->
+            <!--android:text="进入填写"-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:textSize="15sp"-->
+            <!--android:textColor="@color/green"-->
+            <!--android:layout_marginRight="2dp" />-->
+        <!--<Button-->
+
+            <!--android:layout_width="20dp"-->
+            <!--android:layout_height="20dp"-->
+            <!--android:background="@drawable/go"-->
+            <!--android:layout_marginRight="3dp"-->
+            <!--/>-->
+    <!--</LinearLayout>-->
+
+
+
+
+</LinearLayout>

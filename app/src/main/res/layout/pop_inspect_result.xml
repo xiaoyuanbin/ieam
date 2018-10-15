@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+
+    android:layout_gravity="center"
+    >
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+
+        android:background="#ffffff"
+        android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="巡查结果"
+
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
+
+    <RadioGroup
+        android:id="@+id/pop_inspect_rg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+
+        android:layout_marginTop="20dp"
+        >
+
+        <RadioButton
+            android:id="@+id/pop_inspect_rb_normal"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="正常"
+            android:textSize="18sp"
+            android:drawableRight="@android:drawable/btn_radio"
+            android:button="@null"
+
+            android:layout_gravity="center_horizontal" />
+        <TextView
+            android:layout_height="1dp"
+
+            android:layout_width="150dp"
+
+            android:layout_gravity="center_horizontal"
+
+            android:background="#90909090"
+
+            android:layout_marginBottom="2dp"
+
+            android:layout_marginTop="2dp" />
+        <RadioButton
+            android:id="@+id/pop_inspect_rb_unusual"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="异常"
+            android:textSize="18sp"
+            android:drawableRight="@android:drawable/btn_radio"
+            android:button="@null"
+
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center_horizontal"/>
+
+    </RadioGroup>
+
+    </LinearLayout>
+</LinearLayout>

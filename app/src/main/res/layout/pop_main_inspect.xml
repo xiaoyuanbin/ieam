@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+
+    >
+    <ImageView
+
+        android:id="@+id/pop_main_inspect_house"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/main_pop_btn"
+        android:layout_marginRight="20dp"
+        android:padding="10dp"
+        android:src="@drawable/house_pop"
+
+        />
+
+    <ImageView
+        android:id="@+id/pop_main_inspect_equipment"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/main_pop_btn"
+        android:layout_marginRight="20dp"
+        android:padding="10dp"
+        android:src="@drawable/equip_pop"
+
+        />
+    <ImageView
+        android:id="@+id/pop_main_inspect_property"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/main_pop_btn"
+        android:padding="10dp"
+        android:src="@drawable/assets_pop"
+
+        />
+
+</LinearLayout>

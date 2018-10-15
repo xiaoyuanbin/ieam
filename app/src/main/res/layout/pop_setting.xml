@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/bg_tab">
+
+        <Button
+            android:id="@+id/pop_my_setting_btn_back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/back"
+            android:layout_marginLeft="10dp"
+
+
+            />
+
+
+                >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设置"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="15dp"
+
+            android:layout_weight="1" />
+
+    </LinearLayout>
+    <LinearLayout
+
+        android:id="@+id/pop_my_setting_ll_about"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:layout_marginTop="20dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="当前版本"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:background="@color/white"
+            android:layout_marginLeft="15dp"/>
+        <TextView
+            android:id="@+id/pop_my_setting_version"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:text="V1.0.0"
+
+            android:gravity="center|right"
+            android:layout_marginRight="15dp"
+            android:background="@color/white"
+            android:layout_marginLeft="15dp"/>
+    </LinearLayout>
+    <TextView
+        android:layout_height="1dp"
+
+        android:layout_width="match_parent"
+
+        android:background="@color/bg_main"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+
+        />
+    <LinearLayout
+        android:id="@+id/pop_my_setting_ll_help"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="帮助和反馈"
+            android:textColor="@color/black"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="15dp"/>
+
+    </LinearLayout>
+    <!--<LinearLayout-->
+        <!--android:id="@+id/pop_my_setting_ll_chage"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:background="@color/white"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--&gt;-->
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:text="切换账号"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:background="@color/white"-->
+            <!--android:layout_marginLeft="15dp"/>-->
+    <!--</LinearLayout>-->
+
+    <TextView
+        android:layout_height="1dp"
+
+        android:layout_width="match_parent"
+
+        android:background="@color/bg_main"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+
+        />
+        <LinearLayout
+
+            android:id="@+id/pop_my_setting_ll_exit"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/white"
+            >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="退出登录"
+            android:textColor="@color/black"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="15dp"/>
+
+        </LinearLayout>
+
+</LinearLayout>

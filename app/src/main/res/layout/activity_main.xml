@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/white"
+    tools:context=".activity.MainActivity"
+    >
+
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/mmap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </com.baidu.mapapi.map.MapView>
+
+
+    <RelativeLayout
+
+        android:id="@+id/rl_top"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="12dp"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:background="@color/white">
+
+        <SearchView
+            android:id="@+id/main_searchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:background="@color/white"
+
+            android:iconifiedByDefault="false"
+            android:queryHint="搜索"
+            android:layout_marginRight="35dp"
+            android:searchIcon="@drawable/search"
+
+            />
+
+        <Button
+            android:id="@+id/main_btn_mine"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/mine" />
+
+        <Button
+            android:id="@+id/main_btn_scan"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+
+            android:background="@drawable/scan" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/btn_tab"
+        android:layout_width="240dp"
+        android:layout_height="60dp"
+
+        android:layout_alignParentBottom="true"
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/bg_btn_tab"
+
+        android:orientation="horizontal"
+
+        >
+
+
+        <Button
+            android:id="@+id/main_btn_report"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+
+
+
+            android:background="@drawable/report_main" />
+
+
+
+
+
+        <Button
+            android:id="@+id/main_btn_inspect"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="110dp"
+            android:layout_marginTop="5dp"
+
+            android:background="@drawable/inspect_main" />
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/main_btn_repair"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:padding="15dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/main_inspect_btn"
+        android:src="@drawable/repair_main"/>
+
+
+    <!--<ImageView-->
+        <!--android:id="@+id/main_iv_msg"-->
+        <!--android:layout_width="35dp"-->
+        <!--android:layout_height="35dp"-->
+        <!--android:layout_alignEnd="@+id/rl_top"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignRight="@+id/rl_top"-->
+        <!--android:layout_marginTop="80dp"-->
+        <!--android:background="#ffffff"-->
+        <!--android:padding="3dp"-->
+        <!--android:src="@drawable/message" />-->
+
+    <!--<ImageView-->
+
+        <!--android:id="@+id/main_iv_menu"-->
+        <!--android:layout_width="35dp"-->
+        <!--android:layout_height="35dp"-->
+        <!--android:layout_alignEnd="@+id/rl_top"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignRight="@+id/rl_top"-->
+        <!--android:layout_marginTop="130dp"-->
+        <!--android:background="#ffffff"-->
+        <!--android:src="@drawable/menu"-->
+        <!--android:padding="3dp"/>-->
+
+
+</RelativeLayout>

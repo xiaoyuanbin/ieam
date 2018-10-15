@@ -1,0 +1,14 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/bg_tab</item>
+        <item name="colorPrimaryDark">@color/bg_tab</item>
+        <item name="colorAccent">@color/bg_tab</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="MyCustomTabTextAppearance">
+        <item name="android:textSize">17sp</item>
+    </style>
+</resources>

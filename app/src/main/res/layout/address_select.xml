@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/bg_tab"
+
+        >
+        <Button
+            android:id="@+id/address_select_btn_back"
+
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/back"
+            android:layout_marginLeft="10dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择地址"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_marginLeft="5dp"
+            android:gravity="center|left"
+            android:layout_weight="1" />
+        <Button
+            android:id="@+id/address_select_btn_save"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="确定"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:background="@android:color/transparent"
+            android:paddingEnd="5dp"
+            android:paddingRight="5dp"
+            />
+    </LinearLayout>
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+
+        android:layout_marginBottom="10dp"
+        >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+
+        android:layout_marginRight="15dp"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+
+        >
+
+        <TextView
+            android:id="@+id/address_select_tv_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+
+            android:text="位置类型"
+            android:textSize="15sp"
+            android:textColor="@color/gray"
+            />
+        <ImageView
+            android:id="@+id/address_select_img_go"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:visibility="invisible"
+            android:background="@drawable/go"
+            />
+        <TextView
+            android:id="@+id/address_select_tv_community"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            />
+        <ImageView
+            android:id="@+id/address_select_img_go2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:visibility="invisible"
+            android:background="@drawable/go"
+            />
+        <TextView
+            android:id="@+id/address_select_tv_building"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            />
+        <ImageView
+            android:id="@+id/address_select_img_go3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:visibility="invisible"
+            android:background="@drawable/go"
+            />
+        <TextView
+            android:id="@+id/address_select_tv_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            />
+        <ImageView
+            android:id="@+id/address_select_img_go4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:visibility="invisible"
+            android:background="@drawable/go"
+            />
+        <TextView
+            android:id="@+id/address_select_tv_floor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            />
+        <ImageView
+
+
+            android:visibility="invisible"
+            android:id="@+id/address_select_img_go5"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+
+            android:background="@drawable/go"
+            />
+        <TextView
+            android:id="@+id/address_select_tv_house"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:layout_marginRight="15dp"
+            />
+    </LinearLayout>
+    </HorizontalScrollView>
+    <ListView
+        android:id="@+id/address_select_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ListView>
+
+</LinearLayout>

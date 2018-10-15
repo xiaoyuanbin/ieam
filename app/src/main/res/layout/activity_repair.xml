@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/bg_tab"
+        >
+        <Button
+            android:id="@+id/repair_btn_back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/back"
+
+            android:layout_marginLeft="10dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="维修"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+
+            android:gravity="center"
+            android:layout_weight="1" />
+        <Button
+            android:id="@+id/repair_btn_menu"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/menu1"/>
+
+    </LinearLayout>
+
+    <com.hm.ieam.widght.XListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/repair_xlv"
+        ></com.hm.ieam.widght.XListView>
+
+
+    <TextView
+        android:id="@+id/repair_tv_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="暂无数据"
+        android:textSize="20sp"
+        android:layout_gravity="center" />
+</LinearLayout>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:descendantFocusability="blocksDescendants"
+    android:background="@color/white">
+    <ImageView
+        android:id="@+id/report_list_item_img"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/report_list_item_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:layout_marginLeft="5dp"
+            android:textSize="15sp"
+            android:text="南阳小区1栋2单元"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/report_list_item_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_marginLeft="5dp"
+            android:textSize="13sp"
+            android:text="维修中" />
+        <TextView
+            android:id="@+id/report_list_item_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="5dp"
+            android:textSize="13sp"
+            android:text="楼道"
+            android:maxLines="1"
+            />
+
+    </LinearLayout>
+    <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_marginRight="15dp"-->
+        <!--android:background="@color/white"-->
+        <!--android:gravity="right|center">-->
+        <!--<Button-->
+            <!--android:id="@+id/report_list_item_delete"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:text="删除"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:background="@drawable/bg_btn_delete"/>-->
+
+        <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/inspect_list_item_time"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+
+        <!--&lt;!&ndash;android:gravity="bottom"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginTop="10dp"&ndash;&gt;-->
+
+        <!--&lt;!&ndash;android:textSize="13sp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:text="2018/8/5"&ndash;&gt;-->
+
+        <!--&lt;!&ndash;/>&ndash;&gt;-->
+
+
+    <!--</LinearLayout>-->
+
+</LinearLayout>

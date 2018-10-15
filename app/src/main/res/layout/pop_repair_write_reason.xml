@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/bg_tab"
+
+        >
+        <Button
+            android:id="@+id/pop_repair_write_reson_btn_back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/back"
+            android:layout_marginLeft="10dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="故障原因及处理方法"
+            android:textSize="18sp"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/white"
+            android:gravity="center|left"
+            android:layout_weight="1" />
+        <Button
+            android:id="@+id/pop_repair_write_reson_btn_save"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="保存"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:background="@android:color/transparent"
+            android:paddingEnd="5dp"
+            android:paddingRight="5dp" />
+    </LinearLayout>
+    <EditText
+        android:id="@+id/pop_repair_write_reason_edit"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:maxLines="8"
+        android:gravity="left|top"
+        android:hint="请输入内容......"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/edit_bg"
+
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="18sp"/>
+</LinearLayout>
