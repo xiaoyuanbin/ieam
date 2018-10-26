@@ -66,6 +66,7 @@ import com.hm.ieam.utils.Contans;
 import com.hm.ieam.adapter.MyInspectAdapter;
 import com.hm.ieam.bean.InspectBean;
 import com.hm.ieam.utils.JsonUtils;
+import com.hm.ieam.utils.MD5Tools;
 import com.hm.ieam.utils.MyBaiduMap;
 import com.hm.ieam.utils.MyGlideUtils;
 import com.hm.ieam.utils.MyLoadDialog;
@@ -92,11 +93,12 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     XListView inspectListView;
     XListView reportListView;
     XListView repairListView;
     XListView assetsListView;
+
 
     List<String> mDatas;        //存放图片路径
     MyInspectAdapter myInspectAdapter;   //我的巡查适配器
@@ -110,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ,Manifest.permission.ACCESS_FINE_LOCATION
             ,Manifest.permission.READ_EXTERNAL_STORAGE
             ,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    public final static int INSTALL_APK_REQUESTCODE = 123;   //安装权限code
 
 
     int imageId;
@@ -163,11 +164,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     MyBaiduMap myBaiduMap;
 
     WebView web;
-    SearchView main_searchView;
+  //  SearchView main_searchView;
     MyGlideUtils myGlideUtils;
 
-    RelativeLayout rl_top;
+//    RelativeLayout rl_top;
 
+    TextView main_tv_firm;
+    TextView main_tv_name;
     ImageView main_iv_menu;
     List<RepairBean> reportList;    //维修记录
     List<RepairBean> repairList;    //维修记录
@@ -190,12 +193,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         initDate();
+        getUserInfo();
         initView();
         initMap();
 
-        initDate();
-
         initPopupWindow();
+
         myGlideUtils=new MyGlideUtils();
         myLoadDialog=new MyLoadDialog(this);
 
@@ -368,50 +371,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mDatas=new ArrayList<>();
 
-
+        getIsLogin();
 
     }
 
 
     private void initView() {
-
-        main_searchView=findViewById(R.id.main_searchView);
-        if (main_searchView != null) {
-            try {        //--拿到字节码
-                Class<?> argClass = main_searchView.getClass();
-                //--指定某个私有属性,mSearchPlate是搜索框父布局的名字
-                Field ownField = argClass.getDeclaredField("mSearchPlate");
-                //--暴力反射,只有暴力反射才能拿到私有属性
-                ownField.setAccessible(true);
-                View mView = (View) ownField.get(main_searchView);
-                //--设置背景
-                mView.setBackgroundColor(Color.TRANSPARENT);
-                mView.clearFocus();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//
+//        main_searchView=findViewById(R.id.main_searchView);
+//        if (main_searchView != null) {
+//            try {        //--拿到字节码
+//                Class<?> argClass = main_searchView.getClass();
+//                //--指定某个私有属性,mSearchPlate是搜索框父布局的名字
+//                Field ownField = argClass.getDeclaredField("mSearchPlate");
+//                //--暴力反射,只有暴力反射才能拿到私有属性
+//                ownField.setAccessible(true);
+//                View mView = (View) ownField.get(main_searchView);
+//                //--设置背景
+//                mView.setBackgroundColor(Color.TRANSPARENT);
+//                mView.clearFocus();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         mMapView = findViewById(R.id.mmap);
         Button main_btn_inspect=findViewById(R.id.main_btn_inspect);
         ImageView main_btn_repair=findViewById(R.id.main_btn_repair);
         Button main_btn_report=findViewById(R.id.main_btn_report);
-        Button main_btn_mine=findViewById(R.id.main_btn_mine);
-        Button main_btn_scan=findViewById(R.id.main_btn_scan);
-        rl_top=findViewById(R.id.rl_top);
+        ImageView main_img_mine=findViewById(R.id.main_img_mine);
+
+ //       rl_top=findViewById(R.id.rl_top);
+//        Button main_btn_scan=findViewById(R.id.main_btn_scan);
    //     main_iv_msg=findViewById(R.id.main_iv_msg);
   //      main_iv_menu=findViewById(R.id.main_iv_menu);
 
+        main_tv_name=findViewById(R.id.main_tv_name);
+        main_tv_firm=findViewById(R.id.main_tv_firm);
 
-
+        if(isLogin){
+            main_tv_name.setText(sp.getString("cu_username","暂无数据"));
+            main_tv_firm.setText("所属单位:"+sp.getString("c_name","暂无数据"));
+        }
+        else {
+            main_tv_name.setText("暂无数据");
+            main_tv_firm.setText("所属单位:暂无数据");
+        }
         main_btn_inspect.setOnClickListener(this);
         main_btn_repair.setOnClickListener(this);
         main_btn_report.setOnClickListener(this);
-        main_btn_mine.setOnClickListener(this);
-        main_btn_scan.setOnClickListener(this);
+        main_img_mine.setOnClickListener(this);
+//        main_btn_scan.setOnClickListener(this);
 //        main_iv_msg.setOnClickListener(this);
 //        main_iv_menu.setOnClickListener(this);
-        main_searchView.setOnQueryTextListener(this);
+   //     main_searchView.setOnQueryTextListener(this);
 
     }
 
@@ -436,31 +449,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         popWindowUtils=new PopWindowUtils(this);
 
     }
-    //用户输入字符时激发该方法
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        if(TextUtils.isEmpty(newText))
-        {
-
-            //内容为空进入
-         //   Toast.makeText(this, "输入的字符", Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            //输了内容之后进入，还有当删除一个字符也会进入前提输入框了不为空。
-         //   Toast.makeText(this, "你输入的内容为"+newText, Toast.LENGTH_SHORT).show();
-        }
-        return true;
-    }
-
-    //单击三角搜索按钮时激发该方法，如果输入框为空则不调用
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        Log.i("搜索",query);
-        myBaiduMap.searchPosition(query);
-     //   Toast.makeText(this, "你点击了搜索框！", Toast.LENGTH_SHORT).show();
-        return true;
-    }
+//    //用户输入字符时激发该方法
+//    @Override
+//    public boolean onQueryTextChange(String newText) {
+//        if(TextUtils.isEmpty(newText))
+//        {
+//
+//            //内容为空进入
+//         //   Toast.makeText(this, "输入的字符", Toast.LENGTH_SHORT).show();
+//        }
+//        else
+//        {
+//            //输了内容之后进入，还有当删除一个字符也会进入前提输入框了不为空。
+//         //   Toast.makeText(this, "你输入的内容为"+newText, Toast.LENGTH_SHORT).show();
+//        }
+//        return true;
+//    }
+//
+//    //单击三角搜索按钮时激发该方法，如果输入框为空则不调用
+//    @Override
+//    public boolean onQueryTextSubmit(String query) {
+//        Log.i("搜索",query);
+//        myBaiduMap.searchPosition(query);
+//     //   Toast.makeText(this, "你点击了搜索框！", Toast.LENGTH_SHORT).show();
+//        return true;
+//    }
 
     @Override
     public void onClick(View view) {
@@ -468,9 +481,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.main_btn_inspect:
 
                 Log.i("点击","巡查");
-                getIsLogin();
+
                 if(isLogin) {
-                    if(sp.getString("dep_name","0").equals("维修单位")){
+                    if(sp.getString("cu_depid","001").equals("001002")){
+                        if(!sp.getString("cu_ispatrol","0").equals("1")){
+                            Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            initInspectPop();
+                            state = INSPECT;
+                            popWindowUtils.showPopupWindow(inspectPopWindow);
+                        }
+
+                    }
+                    else if(sp.getString("cu_depid","001").equals("001003")){
                         Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                     }else {
                         initInspectPop();
@@ -483,9 +507,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case  R.id.main_btn_repair:
-                getIsLogin();
+
                 if(isLogin) {
-                    if(sp.getString("dep_name","0").equals("物业单位")){
+                    if(sp.getString("cu_depid","001").equals("001002")){
+                        if(!sp.getString("cu_ismaintain","0").equals("1")){
+                            Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            state = REPAIR;
+                            start();
+                        }
+
+                    }
+                    else if(sp.getString("cu_depid","001").equals("001004")){
                         Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                     }
                     else {
@@ -498,11 +532,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.main_btn_report:
-                getIsLogin();
+
                 if(isLogin) {
-                    if(sp.getString("dep_name","0").equals("维修单位")){
+                    if(sp.getString("cu_depid","001").equals("001002")){
+                        if(!sp.getString("cu_isrepair","0").equals("1")){
+
+                            Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Log.i("report","我有保修权限");
+                            state = REPORT;
+                            start();
+                        }
+
+                    }
+                    else if(sp.getString("cu_depid","001").equals("001003")){
                         Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                     }else {
+                        Log.i("report","我是报修单位");
                         state = REPORT;
                         start();
                     }
@@ -513,11 +560,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
 
-            case R.id.main_btn_mine:
-                getIsLogin();
+            case R.id.main_img_mine:
+
                 if(isLogin) {
                     Log.i("点击", "我的");
-         //           getInspectDate();
+
                     initMinePop();
                     popWindowUtils.showfullPopupWindow(minePopWindow);
                 }
@@ -526,12 +573,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
 
-            case R.id.main_btn_scan:
-               // initActionPop();
-                Toast.makeText(this,"暂不支持该功能",Toast.LENGTH_SHORT).show();
-
-              //  popWindowUtils.showPopupWindow(actionPopWindow);
-                break;
+//            case R.id.main_btn_scan:
+//                initActionPop();
+//                Toast.makeText(this,"暂不支持该功能",Toast.LENGTH_SHORT).show();
+//
+//                popWindowUtils.showPopupWindow(actionPopWindow);
+//                break;
 //            case R.id.main_iv_msg:
 //                Toast.makeText(this,"该功能正在开发中",Toast.LENGTH_SHORT).show();
 //                break;
@@ -617,20 +664,196 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      *
+     * 判断账号是否失效
+     * */
+    private void getUserInfo(){
+
+    //    String md5Password= MD5Tools.md5Password(sp.getString("cu_password",""));
+//        Log.i("账号",sp.getString("cu_mobile",""));
+//        Log.i("密码",sp.getString("cu_password",""));
+//        Log.i("getUserInfo的islogin",sp.getString("islogin","null"));
+//        Log.i("getUserInfo的isLogin",isLogin+"");
+//        Log.i("getUserInfo的巡查权限",sp.getString("cu_ispatrol","null"));
+//        Log.i("getUserInfo的部门",sp.getString("cu_depid","null"));
+
+
+
+
+
+
+
+
+
+
+
+        RequestParams params = new RequestParams(Contans.uri);
+        params.addBodyParameter("sqlcmd","moblie_user_list");
+
+        params.addBodyParameter("id",sp.getString("cu_mobile",""));
+        params.addBodyParameter("password",sp.getString("cu_password",""));
+        params.addBodyParameter("datatype","json");
+        params.addBodyParameter("rtnds","1");
+        Log.i("登录",params+"");
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+
+                Log.i("账号信息",result);
+                jsonMap = JsonUtils.stringToJson(result);
+
+                for(String ds:jsonMap.keySet()) {
+
+                    ArrayList<HashMap<String, String>> list = jsonMap.get(ds);
+                    Log.i("数组", list.size()+"");
+                    if(list.size()==0){
+                        if(sp.getString("islogin","null").equals("1")){
+                            Toast.makeText(MainActivity.this, "账号信息已失效，请重新登录", Toast.LENGTH_SHORT).show();
+                        }
+
+                        isLogin=false;
+                    }
+                    else{
+                        isLogin=true;
+                  //      sp.edit().clear().commit();
+                        for (HashMap<String, String> dsMap : list) {
+
+                            //取出想要的数据
+                            for (String key : dsMap.keySet()) {
+                                if (key.equals("cu_userid")) {
+                                    sp.edit().putString("cu_userid", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_usercode")) {
+                                    sp.edit().putString("cu_usercode", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_username")) {
+                                    sp.edit().putString("cu_username", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_userid1")) {
+                                    sp.edit().putString("cu_userid1", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_depid")) {
+
+                                    sp.edit().putString("cu_depid", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("dep_name")) {
+
+                                    sp.edit().putString("dep_name", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_cmpid")) {
+                                    sp.edit().putString("cu_cmpid", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_mobile")) {
+                                    sp.edit().putString("cu_mobile", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_contact")) {
+                                    sp.edit().putString("cu_contact", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_contact1")) {
+                                    sp.edit().putString("cu_contact1", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_islogin")) {
+                                    sp.edit().putString("cu_islogin", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_photo")) {
+                                    sp.edit().putString("cu_photo", dsMap.get(key)).commit();
+
+                                }
+
+                                if (key.equals("cu_type")) {
+                                    sp.edit().putString("cu_type", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_compid")) {
+                                    sp.edit().putString("cu_compid", dsMap.get(key)).commit();
+
+                                }
+
+                                if (key.equals("cu_ispatrol")) {
+//                                    if(!sp.getString("cu_ispatrol","").equals(dsMap.get(key))){
+//                                        Toast.makeText(MainActivity.this,"您的权限已变更，请重新登录",Toast.LENGTH_SHORT).show();
+//                                    }
+                                    sp.edit().putString("cu_ispatrol", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_isrepair")) {
+
+                                    sp.edit().putString("cu_isrepair", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_ismaintain")) {
+
+                                    sp.edit().putString("cu_ismaintain", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("c_name")) {
+
+                                    sp.edit().putString("c_name", dsMap.get(key)).commit();
+
+                                }
+
+
+                            }
+                        }
+                        main_tv_name.setText(sp.getString("cu_username","暂无数据"));
+                        main_tv_firm.setText("所属单位:"+sp.getString("c_name","暂无数据"));
+                    }
+                }
+
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                if (ex instanceof HttpException) { // 网络错误
+                    Toast.makeText(MainActivity.this,"获取数据失败，请检查网络",Toast.LENGTH_SHORT).show();
+
+
+                } else { // 其他错误
+                    Toast.makeText(MainActivity.this,"获取数据失败",Toast.LENGTH_SHORT).show();
+                }
+
+                isLogin=true;
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+    /**
+     *
      * 判断是否需要登录
      * */
     private void getIsLogin() {
 
-        Log.i("login",sp.getString("login","null"));
-        if(sp.getString("login","null").equals("null")){
+        if(sp.getString("islogin","null").equals("null")){
             isLogin=false;
             Log.i("isLogin","false");
-
         }
         else{
             isLogin=true;
             Log.i("isLogin","true");
         }
+
+
+
+
     }
 
     /**
@@ -639,11 +862,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * */
     private void setIsLogin(){
 
+        isLogin=true;
 
-        sp.edit().putString("login","1").commit();
+        sp.edit().putString("islogin","1").commit();
+        main_tv_name.setText(sp.getString("cu_username","暂无数据"));
+        main_tv_firm.setText("所属单位:"+sp.getString("c_name","暂无数据"));
 
-
-        Log.i("login",sp.getString("login","null"));
+    //    Log.i("login",sp.getString("login","null"));
 
     }
     /**
@@ -669,37 +894,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ViewGroup.LayoutParams.MATCH_PARENT, true);
 
         Button msg_btn_back=msgView.findViewById(R.id.msg_btn_back);
-        LinearLayout pop_msg_ll_photo=msgView.findViewById(R.id.pop_msg_ll_photo);
-  //      LinearLayout pop_msg_ll_name=msgView.findViewById(R.id.pop_msg_ll_name);
-  //      LinearLayout pop_msg_ll_firm=msgView.findViewById(R.id.pop_msg_ll_firm);
 
         pop_msg_img_photo=msgView.findViewById(R.id.pop_msg_img_photo);
         TextView  pop_msg_tv_name=msgView.findViewById(R.id.pop_msg_tv_name);
         TextView  pop_msg_tv_firm=msgView.findViewById(R.id.pop_msg_tv_firm);
         pop_msg_img_photo.setImageDrawable(img_mine.getDrawable());
 
-        pop_msg_ll_photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                upPhoto();
-            }
-        });
+//        pop_msg_ll_photo.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                upPhoto();
+//            }
+//        });
         pop_msg_tv_name.setText(mine_tv_name.getText().toString());
         pop_msg_tv_firm.setText(mine_tv_firm_name.getText().toString());
 
-  /*      pop_msg_ll_name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
-        pop_msg_ll_firm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-     */
         msg_btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -766,24 +976,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mine_tv_name=mineView.findViewById(R.id.mine_tv_name);
         mine_tv_firm_name=mineView.findViewById(R.id.mine_tv_firm_name);
         img_mine=mineView.findViewById(R.id.img_mine);
-
-        initIcon();
+        img_mine.setImageResource(R.drawable.defulticon);
+      //  initIcon();
         mine_tv_name.setText(sp.getString("cu_username",""));
-        if(sp.getString("cu_compid","").equals("201808070001")) {
-            mine_tv_firm_name.setText("中锦公司");
-        }
-        else if(sp.getString("cu_compid","").equals("201808070002")){
-            mine_tv_firm_name.setText("睿华公司");
-        }
-        else if(sp.getString("cu_compid","").equals("201808070003")){
-            mine_tv_firm_name.setText("青羊公司");
-        }
-        else if(sp.getString("cu_compid","").equals("201808070004")){
-            mine_tv_firm_name.setText("金信源公司");
-        }
-        else{
-            mine_tv_firm_name.setText("土地公司");
-        }
+
+        mine_tv_firm_name.setText(sp.getString("c_name",""));
+
+
         mine_btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -802,7 +1001,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mine_ll_assets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(sp.getString("dep_name","0").equals("维修单位")){
+                if(sp.getString("cu_depid","001").equals("001002")){
+                    if(!sp.getString("cu_ispatrol","0").equals("1")){
+                        Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        assetsList.removeAll(assetsList);
+
+                        getAssetsData(1);
+                        initMyAssets();
+                        popWindowUtils.showfullPopupWindow(mAssetsPopWindow);
+                    }
+
+                }
+                else if(sp.getString("cu_depid","001").equals("001003")){
                     Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                 }else {
                     assetsList.removeAll(assetsList);
@@ -816,7 +1028,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mine_ll_reapir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(sp.getString("dep_name","0").equals("物业单位")){
+                if(sp.getString("cu_depid","001").equals("001002")){
+                    if(!sp.getString("cu_ismaintain","0").equals("1")){
+                        Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        repairList.removeAll(repairList);
+
+                        getRepairDate(1);
+                        initMyRepairPop();
+                        popWindowUtils.showfullPopupWindow(mRepairPopWindow);
+                    }
+
+                }
+                else if(sp.getString("cu_depid","001").equals("001004")){
                     Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                 }else {
                     repairList.removeAll(repairList);
@@ -831,7 +1056,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mine_ll_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(sp.getString("dep_name","0").equals("维修单位")){
+                if(sp.getString("cu_depid","001").equals("001002")){
+                    if(!sp.getString("cu_isrepair","0").equals("1")){
+                        Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        reportList.removeAll(reportList);
+
+                        getReportDate(1);
+                        initMyReportPop();
+                        popWindowUtils.showfullPopupWindow(mReportPopWindow);
+                    }
+
+                }
+                else if(sp.getString("cu_depid","001").equals("001003")){
                     Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                 }else {
                     reportList.removeAll(reportList);
@@ -845,7 +1083,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mine_ll_inspect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(sp.getString("dep_name","0").equals("维修单位")){
+                if(sp.getString("cu_depid","001").equals("001002")){
+                    if(!sp.getString("cu_ispatrol","0").equals("1")){
+                        Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        inspectList.removeAll(inspectList);
+
+                        getInspectData(1);
+                        initMyInspectPop();
+                        popWindowUtils.showfullPopupWindow(mInspectPopWindow);
+                    }
+
+                }
+                else if(sp.getString("cu_depid","001").equals("001003")){
                     Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                 }else {
                     inspectList.removeAll(inspectList);
@@ -870,20 +1121,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      * 初始化头像信息
      * */
-    private void initIcon() {
-
-        Log.i("login",sp.getString("MyIcon","null"));
-
-
-        if(sp.getString("MyIcon","null").equals("null")){
-            img_mine.setImageResource(R.drawable.defulticon);
-
-        }
-        else{
-            iconUri=Uri.parse(sp.getString("MyIcon","null"));
-            myGlideUtils.loadImage(this,60,60,img_mine,iconUri);
-        }
-    }
+//    private void initIcon() {
+//
+//        Log.i("login",sp.getString("MyIcon","null"));
+//
+//
+//        if(sp.getString("MyIcon","null").equals("null")){
+//            img_mine.setImageResource(R.drawable.defulticon);
+//
+//        }
+//        else{
+//            iconUri=Uri.parse(sp.getString("MyIcon","null"));
+//            myGlideUtils.loadImage(this,60,60,img_mine,iconUri);
+//        }
+//    }
     /**
      *
      * 初始化我的固定资产界面
@@ -1636,7 +1887,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ViewGroup.LayoutParams.MATCH_PARENT, true);
         Button pop_my_setting_ll_back=view.findViewById(R.id.pop_my_setting_btn_back);
         LinearLayout pop_my_setting_ll_about=view.findViewById(R.id.pop_my_setting_ll_about);
-        LinearLayout pop_my_setting_ll_help=view.findViewById(R.id.pop_my_setting_ll_help);
+  //      LinearLayout pop_my_setting_ll_help=view.findViewById(R.id.pop_my_setting_ll_help);
         TextView pop_my_setting_version=view.findViewById(R.id.pop_my_setting_version);
         LinearLayout pop_my_setting_ll_exit=view.findViewById(R.id.pop_my_setting_ll_exit);
 
@@ -1651,13 +1902,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                }
             }
         });
-        pop_my_setting_ll_help.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               Toast.makeText(MainActivity.this,"请联系管理员",Toast.LENGTH_SHORT).show();
-
-            }
-        });
+//        pop_my_setting_ll_help.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//               Toast.makeText(MainActivity.this,"请联系管理员",Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
 
 
 
@@ -1681,8 +1932,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         popWindowUtils.dissPopupWindow(mSettingPopWindow);
                         popWindowUtils.dissPopupWindow(minePopWindow);
                         isLogin=false;
-                        sp=getSharedPreferences("date",MODE_PRIVATE);
-                        sp.edit().remove("login").commit();
+                        if(sp!=null){
+                            sp.edit().clear().commit();
+                            main_tv_name.setText("暂无数据");
+                            main_tv_firm.setText("所属单位:暂无数据");
+                        }
                     }
                 });
                 normalDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -1830,12 +2084,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 保存头像信息
      *
      * */
-    private void saveIcon() {
-
-
-        sp.edit().putString("MyIcon",iconUri.toString()).commit();
-
-    }
+//    private void saveIcon() {
+//
+//
+//        sp.edit().putString("MyIcon",iconUri.toString()).commit();
+//
+//    }
 
 
     //删除巡查记录
@@ -2023,7 +2277,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RequestParams params = new RequestParams(Contans.uri);
         params.addBodyParameter("sqlcmd","moblie_repair_list");
         params.addBodyParameter("datatype","json");
-
+        params.addBodyParameter("depid",sp.getString("cu_depid",""));
         params.addBodyParameter("pagesize","20");
         params.addBodyParameter("id",sp.getString("cu_compid",""));
         params.addBodyParameter("pageindex",index+"");
@@ -2185,7 +2439,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RequestParams params = new RequestParams(Contans.uri);
         params.addBodyParameter("sqlcmd","moblie_repair_list");
         params.addBodyParameter("datatype","json");
-
+        params.addBodyParameter("depid",sp.getString("cu_depid",""));
         params.addBodyParameter("pagesize","20");
         params.addBodyParameter("id",sp.getString("cu_userid",""));
         params.addBodyParameter("pageindex",index+"");
@@ -2342,7 +2596,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RequestParams params = new RequestParams(Contans.uri);
         params.addBodyParameter("sqlcmd","moblie_patrol_list");
         params.addBodyParameter("datatype","json");
-
+        params.addBodyParameter("depid",sp.getString("cu_depid",""));
         params.addBodyParameter("pagesize","20");
         params.addBodyParameter("pageindex",index+"");
 
@@ -2465,7 +2719,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RequestParams params = new RequestParams(Contans.uri);
         params.addBodyParameter("sqlcmd","moblie_assets_list");
         params.addBodyParameter("datatype","json");
-
+        params.addBodyParameter("depid",sp.getString("cu_depid",""));
         params.addBodyParameter("pagesize","20");
         params.addBodyParameter("id",sp.getString("cu_userid",""));
         params.addBodyParameter("pageindex",index+"");
@@ -2668,16 +2922,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setIsLogin();
             }
         }
-        if(requestCode==REQUEST_CODE_CHOOSE){
-            if(resultCode==RESULT_OK) {
-                iconUri= Matisse.obtainResult(data).get(0);
-                myGlideUtils.loadImage(MainActivity.this, 60, 60, pop_msg_img_photo,iconUri);
-                myGlideUtils.loadImage(MainActivity.this, 60, 60, img_mine, iconUri);
-
-                saveIcon();
-
-            }
-        }
+//        if(requestCode==REQUEST_CODE_CHOOSE){
+//            if(resultCode==RESULT_OK) {
+//                iconUri= Matisse.obtainResult(data).get(0);
+//                myGlideUtils.loadImage(MainActivity.this, 60, 60, pop_msg_img_photo,iconUri);
+//                myGlideUtils.loadImage(MainActivity.this, 60, 60, img_mine, iconUri);
+//
+//                saveIcon();
+//
+//            }
+//        }
 
 
     }
@@ -2716,14 +2970,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
 
         Log.i("MainActivity","onResume");
+        Log.i("onResume","isLogin="+isLogin);
+//        if(!isLogin){
+//            main_tv_name.setText("暂无数据");
+//            main_tv_firm.setText("所属单位:暂无数据");
+//        }
+        main_tv_name.setText(sp.getString("cu_username","暂无数据"));
+        main_tv_firm.setText("所属单位:"+sp.getString("c_name","暂无数据"));
 
-        rl_top.setFocusable(true);
-
-        rl_top.setFocusableInTouchMode(true);
+//        rl_top.setFocusable(true);
+//
+//        rl_top.setFocusableInTouchMode(true);
     //    regeKeyListener(main_searchView);
 //        main_searchView.setFocusable(false);
 //        main_searchView.setFocusableInTouchMode(true);
-        main_searchView.clearFocus();
+  //      main_searchView.clearFocus();
 
         myBaiduMap.reStart();
         mMapView.onResume();

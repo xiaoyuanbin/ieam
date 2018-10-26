@@ -52,8 +52,9 @@
             android:id="@+id/pop_assets_card_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
+
             android:textSize="18sp"
+            android:inputType="textEmailAddress"
 
             android:layout_marginLeft="15dp"
 
@@ -62,4 +63,5 @@
             android:hint="请输入编号"/>
 
     </LinearLayout>
+
 </LinearLayout>

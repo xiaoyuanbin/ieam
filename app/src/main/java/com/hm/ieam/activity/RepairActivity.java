@@ -376,7 +376,7 @@ public class RepairActivity extends AppCompatActivity implements View.OnClickLis
         RequestParams params = new RequestParams(Contans.uri);
         params.addBodyParameter("sqlcmd","moblie_repair_list");
         params.addBodyParameter("datatype","json");
-
+        params.addBodyParameter("depid",sp.getString("cu_depid",""));
         params.addBodyParameter("pagesize","20");
         params.addBodyParameter("id",sp.getString("cu_compid",""));
         params.addBodyParameter("pageindex",index+"");

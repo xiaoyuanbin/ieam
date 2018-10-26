@@ -58,7 +58,7 @@
         >
 
         <TextView
-            android:id="@+id/address_select_tv_area"
+            android:id="@+id/address_select_tv_community"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -74,8 +74,24 @@
             android:visibility="invisible"
             android:background="@drawable/go"
             />
+        <!--<TextView-->
+            <!--android:id="@+id/address_select_tv_community"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+
+
+            <!--android:textSize="15sp"-->
+            <!--android:textColor="@color/black"-->
+            <!--/>-->
+        <!--<ImageView-->
+            <!--android:id="@+id/address_select_img_go2"-->
+            <!--android:layout_width="20dp"-->
+            <!--android:layout_height="20dp"-->
+            <!--android:visibility="invisible"-->
+            <!--android:background="@drawable/go"-->
+            <!--/>-->
         <TextView
-            android:id="@+id/address_select_tv_community"
+            android:id="@+id/address_select_tv_building"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
@@ -91,22 +107,6 @@
             android:background="@drawable/go"
             />
         <TextView
-            android:id="@+id/address_select_tv_building"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-
-            android:textSize="15sp"
-            android:textColor="@color/black"
-            />
-        <ImageView
-            android:id="@+id/address_select_img_go3"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:visibility="invisible"
-            android:background="@drawable/go"
-            />
-        <TextView
             android:id="@+id/address_select_tv_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
             android:textColor="@color/black"
             />
         <ImageView
-            android:id="@+id/address_select_img_go4"
+            android:id="@+id/address_select_img_go3"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:visibility="invisible"
@@ -134,7 +134,7 @@
 
 
             android:visibility="invisible"
-            android:id="@+id/address_select_img_go5"
+            android:id="@+id/address_select_img_go4"
             android:layout_width="20dp"
             android:layout_height="20dp"
 

@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    public void getUserData(String username,String password) {
+    public void getUserData(String username, final String password) {
 
         myLoadDialog.showLoading("正在登录","登录中，请稍等...");
         RequestParams params = new RequestParams(Contans.uri);
@@ -203,12 +203,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     sp.edit().putString("cu_compid", dsMap.get(key)).commit();
 
                                 }
+
+                                if (key.equals("cu_ispatrol")) {
+                                    sp.edit().putString("cu_ispatrol", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_isrepair")) {
+                                    sp.edit().putString("cu_isrepair", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("cu_ismaintain")) {
+                                    sp.edit().putString("cu_ismaintain", dsMap.get(key)).commit();
+
+                                }
+                                if (key.equals("c_name")) {
+                                    sp.edit().putString("c_name", dsMap.get(key)).commit();
+
+                                }
+
                             }
                         }
                     }
                 }
                 if(isRight) {
                     Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                    sp.edit().putString("cu_password", password).commit();
                     setResult(1);
                     finish();
                 }else{

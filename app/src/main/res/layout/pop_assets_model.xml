@@ -52,7 +52,7 @@
             android:id="@+id/pop_assets_model_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="textEmailAddress"
             android:textSize="18sp"
 
             android:layout_marginLeft="15dp"

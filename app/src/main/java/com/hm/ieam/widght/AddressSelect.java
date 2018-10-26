@@ -27,11 +27,11 @@ public class AddressSelect extends LinearLayout implements View.OnClickListener 
     ListView listView;
     MyAddressAdapter adapter;
 
-    AddressBean addressBean;
+
     List<String> address;
 
     Button btn_save;
-    TextView tv_area;
+  //  TextView tv_area;
     TextView tv_community;
     TextView tv_building;
     TextView tv_unit;
@@ -42,7 +42,7 @@ public class AddressSelect extends LinearLayout implements View.OnClickListener 
     ImageView img_go2;
     ImageView img_go3;
     ImageView img_go4;
-    ImageView img_go5;
+ //   ImageView img_go5;
 
     public AddressSelect(Context context) {
         super(context);
@@ -71,7 +71,7 @@ public class AddressSelect extends LinearLayout implements View.OnClickListener 
         listView=rootView.findViewById(R.id.address_select_listview);
 
         btn_save=rootView.findViewById(R.id.address_select_btn_save);
-        tv_area=rootView.findViewById(R.id.address_select_tv_area);
+   //     tv_area=rootView.findViewById(R.id.address_select_tv_area);
         tv_community=rootView.findViewById(R.id.address_select_tv_community);
         tv_building=rootView.findViewById(R.id.address_select_tv_building);
         tv_unit=rootView.findViewById(R.id.address_select_tv_unit);
@@ -82,10 +82,10 @@ public class AddressSelect extends LinearLayout implements View.OnClickListener 
         img_go2=rootView.findViewById(R.id.address_select_img_go2);
         img_go3=rootView.findViewById(R.id.address_select_img_go3);
         img_go4=rootView.findViewById(R.id.address_select_img_go4);
-        img_go5=rootView.findViewById(R.id.address_select_img_go5);
+  //      img_go5=rootView.findViewById(R.id.address_select_img_go5);
 
         btn_save.setOnClickListener(this);
-        tv_area.setOnClickListener(this);
+    //    tv_area.setOnClickListener(this);
         tv_community.setOnClickListener(this);
         tv_building.setOnClickListener(this);
         tv_unit.setOnClickListener(this);
@@ -113,19 +113,24 @@ public class AddressSelect extends LinearLayout implements View.OnClickListener 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.address_select_tv_area:
+//            case R.id.address_select_tv_area:
+//                tv_building.setText("");
+//                img_go.setVisibility(INVISIBLE);
+//                img_go2.setVisibility(INVISIBLE);
+//                img_go3.setVisibility(INVISIBLE);
+//                img_go4.setVisibility(INVISIBLE);
+//                img_go5.setVisibility(INVISIBLE);
+//
+//
+//
+//
+//                break;
+            case R.id.address_select_tv_community:
                 tv_building.setText("");
                 img_go.setVisibility(INVISIBLE);
                 img_go2.setVisibility(INVISIBLE);
                 img_go3.setVisibility(INVISIBLE);
                 img_go4.setVisibility(INVISIBLE);
-                img_go5.setVisibility(INVISIBLE);
-
-
-
-
-                break;
-            case R.id.address_select_tv_community:
                 break;
             case R.id.address_select_tv_building:
                 break;

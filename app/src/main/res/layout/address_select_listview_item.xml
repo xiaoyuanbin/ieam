@@ -9,7 +9,8 @@
         android:layout_height="50dp"
         android:gravity="center_vertical"
         android:text="泉水人家"
-        android:textColor="@color/black"
+        android:textColor="@drawable/font_selector"
+        android:duplicateParentState="true"
         android:textSize="18sp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"/>

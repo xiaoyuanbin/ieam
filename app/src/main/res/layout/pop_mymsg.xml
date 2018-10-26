@@ -75,11 +75,11 @@
         android:layout_height="50dp"
         android:orientation="horizontal"
         android:background="@color/white"
-        android:gravity="center">
+        android:gravity="center_vertical">
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+
             android:textSize="17sp"
             android:text="姓名"
             android:layout_marginLeft="20dp"
@@ -116,20 +116,20 @@
         android:layout_height="50dp"
         android:orientation="horizontal"
         android:background="@color/white"
-        android:gravity="center">
+        android:gravity="center_vertical">
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+
             android:textSize="17sp"
             android:text="所属单位"
             android:layout_marginLeft="20dp"
             android:textColor="@color/black"/>
         <TextView
             android:id="@+id/pop_msg_tv_firm"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+
             android:textSize="15sp"
             android:text="金信源公司"
             android:gravity="right"

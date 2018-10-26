@@ -2,14 +2,13 @@ package com.hm.ieam.activity;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -41,7 +41,6 @@ import com.hm.ieam.utils.JsonUtils;
 import com.hm.ieam.utils.MyGlideUtils;
 import com.hm.ieam.utils.MyLoadDialog;
 import com.hm.ieam.utils.MyOkhttpClient;
-import com.hm.ieam.widght.AddressPickerView;
 import com.hm.ieam.adapter.MyGridViewAdapter;
 import com.hm.ieam.utils.PhotoUtils;
 import com.hm.ieam.utils.PopWindowUtils;
@@ -78,6 +77,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     private static final int CAREMA = 2;   //调用相机请求码
     SharedPreferences sp;
 
+    ArrayMap<String,String> firmMap;
     PopWindowUtils popWindowUtils;
     PhotoUtils photoUtils;   //拍照工具类
     Uri imageUri;    //拍照时获取图片uri
@@ -86,7 +86,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
     RepairBean repairBean;
     HashMap<String, ArrayList<HashMap<String, String>>> jsonMap; //存放解析json数据的结果
-    List<AddressBean.AddressItemBean> areaList;
+ //   List<AddressBean.AddressItemBean> areaList;
     List<AddressBean.AddressItemBean> communityList;
     List<AddressBean.AddressItemBean> buildingList;
     List<AddressBean.AddressItemBean> unitList;
@@ -99,9 +99,9 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
     MyLoadDialog myLoadDialog;
 
-
-
-
+    int choiceId=-1;    //报修公司选择
+    List<String> firmList;
+    ArrayAdapter listAdapter;
 
     MyOkhttpClient myOkhttpClient;
     LinearLayout report_ll_address;
@@ -130,7 +130,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     TextView report_time;
 
 
-    TextView address_select_tv_area;
+//    TextView address_select_tv_area;
     TextView address_select_tv_community;
     TextView address_select_tv_building;
     TextView address_select_tv_unit;
@@ -142,7 +142,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     ImageView address_select_img_go2;
     ImageView address_select_img_go3;
     ImageView address_select_img_go4;
-    ImageView address_select_img_go5;
+//    ImageView address_select_img_go5;
 
  //   TextView pop_inspect_image_text;  //图片描述
 
@@ -174,15 +174,15 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
         imgs=new ArrayList<>();
    //     imageDescription=new ArrayList<>();
-        areaList=new ArrayList<>();
+   //     areaList=new ArrayList<>();
         communityList=new ArrayList<>();
         buildingList=new ArrayList<>();
         unitList=new ArrayList<>();
         floorList=new ArrayList<>();
         houseList=new ArrayList<>();
-
         positions=new ArrayList<>();
-
+        firmList=new ArrayList<>();
+        firmMap=new ArrayMap<>();
 //        for(int i=0;i<20;i++){
 //            imageDescription.add("");
 //        }
@@ -395,36 +395,37 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                 String billid="";
                 String tbname="";
 
-                if(address_select_tv_area!=null){
-                    if(address_select_tv_area.getText().equals("")||address_select_tv_area.getText().equals("片区")||address_select_tv_area.getText().equals("位置类型")){
-
-                        Log.i("area","片区");
-
+//                if(address_select_tv_area!=null){
+//                    if(address_select_tv_area.getText().equals("")||address_select_tv_area.getText().equals("片区")||address_select_tv_area.getText().equals("位置类型")){
+//
+//                        Log.i("area","片区");
+//
+//                    }
+                if(address_select_tv_community!=null){
+                    if((address_select_tv_community.getText().equals("")||address_select_tv_community.getText().equals("小区"))||address_select_tv_community.getText().equals("位置类型")){
+//                        Log.i("area","小区");
+//                        billid=areaList.get(positions.get(0)).getI();
+//                        tbname="mps_area";
                     }
-                    else if((address_select_tv_community.getText().equals("")||address_select_tv_community.getText().equals("小区"))&&positions.size()>0){
-                        Log.i("area","小区");
-                        billid=areaList.get(positions.get(0)).getI();
-                        tbname="mps_area";
-                    }
-                    else if((address_select_tv_building.getText().equals("")||address_select_tv_building.getText().equals("楼栋"))&&positions.size()>1){
-                        Log.i("area","楼栋");
-                        billid=communityList.get(positions.get(1)).getI();
+                    else if((address_select_tv_building.getText().equals("")||address_select_tv_building.getText().equals("楼栋"))&&positions.size()>0){
+                      //  Log.i("area","楼栋");
+                        billid=communityList.get(positions.get(0)).getI();
                         tbname="mps_uptown";
                     }
-                    else if((address_select_tv_unit.getText().equals("")||address_select_tv_unit.getText().equals("单元"))&&positions.size()>2){
-                        billid=buildingList.get(positions.get(2)).getI();
+                    else if((address_select_tv_unit.getText().equals("")||address_select_tv_unit.getText().equals("单元"))&&positions.size()>1){
+                        billid=buildingList.get(positions.get(1)).getI();
                         tbname="mps_building";
                     }
-                    else if((address_select_tv_floor.getText().equals("")||address_select_tv_floor.getText().equals("楼层"))&&positions.size()>3){
-                        billid=unitList.get(positions.get(3)).getI();
+                    else if((address_select_tv_floor.getText().equals("")||address_select_tv_floor.getText().equals("楼层"))&&positions.size()>2){
+                        billid=unitList.get(positions.get(2)).getI();
                         tbname="mps_unit";
                     }
-                    else if((address_select_tv_house.getText().equals("")||address_select_tv_house.getText().equals("房屋"))&&positions.size()>4){
-                        billid=floorList.get(positions.get(4)).getI();
+                    else if((address_select_tv_house.getText().equals("")||address_select_tv_house.getText().equals("房屋"))&&positions.size()>3){
+                        billid=floorList.get(positions.get(3)).getI();
                         tbname="mps_floor";
                     }
-                    else if(positions.size()>5){
-                        billid=houseList.get(positions.get(5)).getI();
+                    else if(positions.size()>4){
+                        billid=houseList.get(positions.get(4)).getI();
                         tbname="mps_room";
                     }
                 }
@@ -439,8 +440,29 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
                 break;
             case R.id.report_ll_address:
-                if(areaList.size()==0) {
-                    getAddressData("mps_area", "001", areaList);
+
+                if(positions.size()>0&&positions!=null){
+                    Log.i("positions.size()",positions.size()+"");
+
+                    if(positions.size()==1&&buildingList.size()==0){
+                        buildingList.clear();
+                        getAddressData("mps_building", "", buildingList);
+                    }
+                    if(positions.size()==2&&unitList.size()==0){
+                        unitList.clear();
+                        getAddressData("mps_unit", "", unitList);
+                    }
+                    if(positions.size()==3&&floorList.size()==0){
+                        floorList.clear();
+                        getAddressData("mps_floor", "", floorList);
+                    }
+                    if(positions.size()==4&&houseList.size()==0){
+                        houseList.clear();
+                        getAddressData("mps_room", "", houseList);
+                    }
+                }
+                else if(communityList.size()==0) {
+                    getAddressData("mps_uptown", "", communityList);
                 }
                 Log.i("打印顺序","后");
                 initAddressPop();
@@ -448,8 +470,14 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case R.id.report_ll_firm:
-                initFirmPop();
-                popWindowUtils.showPopupWindow(firmPopWindow);
+                if(firmList==null||firmList.size()==0){
+
+                    getReportFirm();
+                }
+                else{
+                    initFirmPop(firmList);
+                }
+
                 break;
             case R.id.report_ll_type:
 
@@ -499,20 +527,15 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 //
 //                        }
                         String compid="";
-                        if(report_firm.getText().toString().equals("中锦公司")) {
-                            compid = "201808070001";
-                        }else if(report_firm.getText().toString().equals("睿华公司")){
-                            compid = "201808070002";
+                        if(firmMap!=null&&firmMap.size()>0)
+                        {
+                            for(String firmname:firmMap.keySet()){
+                                if(report_firm.getText().toString().equals(firmname)){
+                                    compid=firmMap.get(firmname);
+                                }
+                            }
                         }
-                        else if(report_firm.getText().toString().equals("青羊公司")){
-                            compid = "201808070003";
-                        }
-                        else if(report_firm.getText().toString().equals("金信源公司")){
-                            compid = "201808070004";
-                        }
-                        else{
-                            compid = "201809270003";
-                        }
+                        Log.i("提交compid，billid，tbname",compid+"-"+billid+"-"+tbname);
 
                         Map<String,String> params=new HashMap<>();
                   //      if(repairBean==null||repairBean.getId().equals("")){
@@ -526,13 +549,13 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                             params.put("r_tbname",tbname);
                             params.put("r_date",report_time.getText().toString());
                             params.put("r_part",report_position.getText().toString());
-                            params.put("r_usersign",sp.getString("cu_userid","201809260006"));
+                            params.put("r_usersign",sp.getString("cu_userid",""));
 
                             params.put("r_cmpid", sp.getString("cu_cmpid","001"));
                             params.put("r_depid", sp.getString("cu_depid","001004"));
                             params.put("r_depname", sp.getString("dep_name","物业单位"));
-                            params.put("r_createuid", sp.getString("cu_userid","201809260006"));
-                            params.put("r_createmen", sp.getString("cu_username","testwuye"));
+                            params.put("r_createuid", sp.getString("cu_userid",""));
+                            params.put("r_createmen", sp.getString("cu_username",""));
                             params.put("r_createdate", report_time.getText().toString());
                             params.put("r_updatedate", report_time.getText().toString());
 
@@ -640,36 +663,142 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     /**
      * 报修单位
      * */
-    private void initFirmPop() {
-        final View firmView= LayoutInflater.from(this).inflate(R.layout.pop_report_firm, null, false);
-        firmPopWindow=new PopupWindow(firmView, ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        RadioGroup radioGroup=firmView.findViewById(R.id.pop_report_firm_rg);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton radbtn = firmView.findViewById(checkedId);
-                radbtn.setChecked(true);
-                Log.i("RadioButton","checkedId为"+checkedId);
-                report_firm.setText(radbtn.getText());
-                popWindowUtils.dissPopupWindow(firmPopWindow);
-            }
-        });
+    private void initFirmPop(final List firmList) {
+
+        listAdapter=new ArrayAdapter(ReportActivity.this, android.R.layout.simple_list_item_single_choice, firmList);
+
+        AlertDialog.Builder singleChoiceDialog = new AlertDialog.Builder(ReportActivity.this);
+        singleChoiceDialog.setTitle("报修单位");
+        // 第二个参数是默认选项，此处设置为0
+
+        singleChoiceDialog.setSingleChoiceItems(listAdapter, choiceId,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        choiceId=which;
+                    }
+                });
+
+        singleChoiceDialog.setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i("which",which+"");
+                        Log.i("choiceId",choiceId+"");
+                        if(choiceId!=-1)
+                        report_firm.setText(firmList.get(choiceId)+"");
+
+                    }
+                });
+        singleChoiceDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        singleChoiceDialog.show();
+//        final View firmView= LayoutInflater.from(this).inflate(R.layout.pop_report_firm, null, false);
+//        firmPopWindow=new PopupWindow(firmView, ViewGroup.LayoutParams.WRAP_CONTENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT, true);
+//        RadioGroup radioGroup=firmView.findViewById(R.id.pop_report_firm_rg);
+//        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                RadioButton radbtn = firmView.findViewById(checkedId);
+//                radbtn.setChecked(true);
+//                Log.i("RadioButton","checkedId为"+checkedId);
+//                report_firm.setText(radbtn.getText());
+//                popWindowUtils.dissPopupWindow(firmPopWindow);
+//            }
+//        });
 
 
     }
 
+    //获取报修公司名单
+    private void getReportFirm(){
+
+        myLoadDialog.showLoading("获取数据","正在加载数据中，请稍等...");
+        RequestParams params = new RequestParams(Contans.uri);
+        params.addBodyParameter("sqlcmd","moblie_company_list");
+        params.addBodyParameter("datatype","json");
+        params.addBodyParameter("pagesize","20");
+        params.addBodyParameter("pageindex","1");
+        params.addBodyParameter("qry","1");
+        params.addBodyParameter("rtnds","2");
+
+        params.addBodyParameter("c_type","201808020025");
+
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                myLoadDialog.hideLoading();
+                Log.i("公司数据",result);
+                jsonMap = JsonUtils.stringToJson(result);
+
+                for(String ds:jsonMap.keySet()){
+
+                    ArrayList<HashMap<String, String>> list=jsonMap.get(ds);
+                    if(list.size()>0){
+
+                        Log.i("数组大小", list.size()+"");
+                        for(HashMap<String, String> dsMap:list){
+
+                            String id="";
+                            String name="";
+                            //取出想要的数据
+                            for(String key:dsMap.keySet()) {
+
+                                if(key.equals("c_id")){
+                                    id=dsMap.get(key);
+                                }
+                                if(key.equals("c_shortname")){
+                                    name=dsMap.get(key);
+                                    firmList.add(name);
+                                }
+
+                            }
+                            firmMap.put(name,id);
+                        }
+                    }
+                    initFirmPop(firmList);
+                }
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                myLoadDialog.hideLoading();
+                Log.i("获取数据失败",ex.getMessage());
+                if (ex instanceof HttpException) { // 网络错误
+                    Toast.makeText(ReportActivity.this,"获取数据失败，请检查网络",Toast.LENGTH_SHORT).show();
+                } else { // 其他错误
+                    Toast.makeText(ReportActivity.this,"获取数据失败",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                myLoadDialog.hideLoading();
+            }
+
+            @Override
+            public void onFinished() {
+                myLoadDialog.hideLoading();
+            }
+        });
+
+    }
     /**
      * 报修地址
      * */
     private void initAddressPop() {
 
-        count=0;
-        //巡查对象
         final View objView= LayoutInflater.from(this).inflate(R.layout.address_select, null, false);
         addressPopWindow=new PopupWindow(objView, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT, true);
-        address_select_tv_area=objView.findViewById(R.id.address_select_tv_area);
+     //   address_select_tv_area=objView.findViewById(R.id.address_select_tv_area);
         address_select_tv_community=objView.findViewById(R.id.address_select_tv_community);
         address_select_tv_building=objView.findViewById(R.id.address_select_tv_building);
         address_select_tv_unit=objView.findViewById(R.id.address_select_tv_unit);
@@ -680,53 +809,111 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         address_select_img_go2=objView.findViewById(R.id.address_select_img_go2);
         address_select_img_go3=objView.findViewById(R.id.address_select_img_go3);
         address_select_img_go4=objView.findViewById(R.id.address_select_img_go4);
-        address_select_img_go5=objView.findViewById(R.id.address_select_img_go5);
+  //      address_select_img_go5=objView.findViewById(R.id.address_select_img_go5);
 
 
         addresslistview=objView.findViewById(R.id.address_select_listview);
-        myAddressAdapter=new MyAddressAdapter(this,areaList);
-        addresslistview.setAdapter(myAddressAdapter);
+        if(positions!=null) {
+            if(positions.size()==0){
+
+                count=0;
+                initAddress(-1);
+
+            }
+            if(positions.size()==1){
+
+                count=1;
+                initAddress(positions.get(0));
+
+
+            }
+            if(positions.size()==2){
+
+                address_select_tv_community.setText(communityList.get(positions.get(0)).getN());
+
+
+                count=2;
+                initAddress(positions.get(1));
+
+            }
+            if(positions.size()==3){
+
+                address_select_tv_community.setText(communityList.get(positions.get(0)).getN());
+                address_select_tv_building.setText(buildingList.get(positions.get(1)).getN());
+
+
+                count=3;
+                initAddress(positions.get(2));
+
+            }
+            if(positions.size()==4){
+
+                address_select_tv_community.setText(communityList.get(positions.get(0)).getN());
+                address_select_tv_building.setText(buildingList.get(positions.get(1)).getN());
+                address_select_tv_unit.setText(unitList.get(positions.get(2)).getN());
+
+                count=4;
+                initAddress(positions.get(3));
+                //            myAddressAdapter=new MyAddressAdapter(this,houseList);
+            }
+            if(positions.size()==5){
+                address_select_tv_community.setText(communityList.get(positions.get(0)).getN());
+                address_select_tv_building.setText(buildingList.get(positions.get(1)).getN());
+                address_select_tv_unit.setText(unitList.get(positions.get(2)).getN());
+                address_select_tv_floor.setText(unitList.get(positions.get(3)).getN());
+                count=5;
+                initAddress(positions.get(4));
+                //             myAddressAdapter=new MyAddressAdapter(this,houseList);
+            }
+
+        }
+
         addresslistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 count++;
                 if(count==1){
-                    positions.removeAll(positions);
+                    positions.clear();
+                }
+                if(count>5){
+                    count=5;
+                    positions.remove(4);
+                    Log.i("position",positions.size()+"");
                 }
                 Log.i("count",count+"");
                 Log.i("position",position+"");
-
-                initAddress(position);
                 positions.add(position);
+                initAddress(position);
 
-
-            }
-        });
-
-        address_select_tv_area.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(!address_select_tv_area.getText().equals("片区")){
-                    count=0;
-                    initAddress(0);
-                    for(int i=positions.size()-1;i>=0;i--){
-                        positions.remove(i);
-                    }
-
-
-                }
 
 
             }
         });
+
+//        address_select_tv_area.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                if(!address_select_tv_area.getText().equals("片区")){
+//                    count=0;
+//                    initAddress(0);
+//                    for(int i=positions.size()-1;i>=0;i--){
+//                        positions.remove(i);
+//                    }
+//
+//
+//                }
+//
+//
+//            }
+//        });
         address_select_tv_community.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!address_select_tv_community.getText().equals("小区")) {
-                    count = 1;
-                    initAddress(positions.get(0));
-                    for(int i=positions.size()-1;i>0;i--){
+                    count = 0;
+                    initAddress(-1);
+                    for(int i=positions.size()-1;i>=0;i--){
                         positions.remove(i);
                     }
 
@@ -740,9 +927,9 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View view) {
                 if(!address_select_tv_building.getText().equals("楼栋")) {
-                    count = 2;
-                    initAddress(positions.get(1));
-                    for(int i=positions.size()-1;i>1;i--){
+                    count = 1;
+                    initAddress(positions.get(0));
+                    for(int i=positions.size()-1;i>0;i--){
                         positions.remove(i);
                     }
                 }
@@ -752,10 +939,10 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View view) {
                 if(!address_select_tv_unit.getText().equals("单元")) {
-                    count = 3;
-                    initAddress(positions.get(2));
+                    count = 2;
+                    initAddress(positions.get(1));
 
-                    for(int i=positions.size()-1;i>2;i--){
+                    for(int i=positions.size()-1;i>1;i--){
                         positions.remove(i);
                     }
                 }
@@ -765,10 +952,10 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View view) {
                 if(!address_select_tv_floor.getText().equals("楼层")) {
-                    count = 4;
-                    initAddress(positions.get(3));
+                    count = 3;
+                    initAddress(positions.get(2));
 
-                    for(int i=positions.size()-1;i>3;i--){
+                    for(int i=positions.size()-1;i>2;i--){
                         positions.remove(i);
                     }
                 }
@@ -778,10 +965,10 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View view) {
                 if(!address_select_tv_house.getText().equals("房屋")) {
-                    count = 5;
+                    count = 4;
 
-                    initAddress(positions.get(4));
-                    for(int i=positions.size()-1;i>4;i--){
+                    initAddress(positions.get(3));
+                    for(int i=positions.size()-1;i>3;i--){
                         positions.remove(i);
                     }
                 }
@@ -802,34 +989,35 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View view) {
 
-                if(address_select_tv_area.getText().equals("片区")||address_select_tv_area.getText().equals("位置类型")){
-                    address_select_tv_area.setText("");
-                    report_address.setText("");
-                }
-                else if(address_select_tv_community.getText().equals("小区")){
+//                if(address_select_tv_area.getText().equals("小区")||address_select_tv_area.getText().equals("位置类型")){
+//                    address_select_tv_area.setText("");
+//                    report_address.setText("");
+//                }
+                if(address_select_tv_community.getText().equals("小区")||address_select_tv_community.getText().equals("位置类型")){
                     address_select_tv_community.setText("");
-                    report_address.setText(address_select_tv_area.getText());
+                    report_address.setText("");
+
                 }
                 else if(address_select_tv_building.getText().equals("楼栋")){
                     address_select_tv_building.setText("");
-                    report_address.setText(address_select_tv_area.getText() + " " + address_select_tv_community.getText());
+                    report_address.setText(address_select_tv_community.getText());
+
                 }
                 else if(address_select_tv_unit.getText().equals("单元")){
                     address_select_tv_unit.setText("");
-                    report_address.setText(address_select_tv_area.getText() + " " + address_select_tv_community.getText() + " " + address_select_tv_building.getText());
+                    report_address.setText(address_select_tv_community.getText() + " " + address_select_tv_building.getText());
                 }
                 else if(address_select_tv_floor.getText().equals("楼层")){
                     address_select_tv_floor.setText("");
-                    report_address.setText(address_select_tv_area.getText() + " " + address_select_tv_community.getText() + " " + address_select_tv_building.getText()
-                            + " " + address_select_tv_unit.getText());
+                    report_address.setText(address_select_tv_community.getText() + " " + address_select_tv_building.getText() + " " + address_select_tv_unit.getText());
                 }
                 else if(address_select_tv_house.getText().equals("房屋")){
                     address_select_tv_house.setText("");
-                    report_address.setText(address_select_tv_area.getText() + " " + address_select_tv_community.getText() + " " + address_select_tv_building.getText()
+                    report_address.setText(address_select_tv_community.getText() + " " + address_select_tv_building.getText()
                             + " " + address_select_tv_unit.getText() + " " + address_select_tv_floor.getText());
                 }
                 else {
-                    report_address.setText(address_select_tv_area.getText() + " " + address_select_tv_community.getText() + " " + address_select_tv_building.getText()
+                    report_address.setText(address_select_tv_community.getText() + " " + address_select_tv_building.getText()
                             + " " + address_select_tv_unit.getText() + " " + address_select_tv_floor.getText() + " " + address_select_tv_house.getText());
                 }
                 popWindowUtils.dissPopupWindow(addressPopWindow);
@@ -839,50 +1027,23 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     }
 
 
+    //地址点击事件
     public void initAddress(int position){
         if(count==0){
             address_select_img_go.setVisibility(View.INVISIBLE);
             address_select_img_go2.setVisibility(View.INVISIBLE);
             address_select_img_go3.setVisibility(View.INVISIBLE);
             address_select_img_go4.setVisibility(View.INVISIBLE);
-            address_select_img_go5.setVisibility(View.INVISIBLE);
+      //      address_select_img_go5.setVisibility(View.INVISIBLE);
 
-            address_select_tv_area.setText("片区");
-            address_select_tv_area.setTextColor(getResources().getColor(R.color.gray));
-
-
-            address_select_tv_community.setText("");
-            address_select_tv_building.setText("");
-            address_select_tv_unit.setText("");
-            address_select_tv_floor.setText("");
-            address_select_tv_house.setText("");
-
-
-            myAddressAdapter=new MyAddressAdapter(ReportActivity.this,areaList);
-            addresslistview.setAdapter(myAddressAdapter);
-            myAddressAdapter.notifyDataSetChanged();
-
-        }
-        if(count==1){
-            address_select_img_go.setVisibility(View.VISIBLE);
-            address_select_img_go2.setVisibility(View.INVISIBLE);
-            address_select_img_go3.setVisibility(View.INVISIBLE);
-            address_select_img_go4.setVisibility(View.INVISIBLE);
-            address_select_img_go5.setVisibility(View.INVISIBLE);
-
-
-            address_select_tv_area.setText(areaList.get(position).getN());
-            address_select_tv_area.setTextColor(getResources().getColor(R.color.green));
-            address_select_tv_community.setTextColor(getResources().getColor(R.color.gray));
             address_select_tv_community.setText("小区");
+            address_select_tv_community.setTextColor(getResources().getColor(R.color.gray));
+
+
             address_select_tv_building.setText("");
             address_select_tv_unit.setText("");
             address_select_tv_floor.setText("");
             address_select_tv_house.setText("");
-
-
-            communityList.removeAll(communityList);
-            getAddressData("mps_uptown",areaList.get(position).getI(),communityList);
 
 
             myAddressAdapter=new MyAddressAdapter(ReportActivity.this,communityList);
@@ -890,16 +1051,43 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             myAddressAdapter.notifyDataSetChanged();
 
         }
-        if(count==2){
+//        if(count==1){
+//            address_select_img_go.setVisibility(View.VISIBLE);
+//            address_select_img_go2.setVisibility(View.INVISIBLE);
+//            address_select_img_go3.setVisibility(View.INVISIBLE);
+//            address_select_img_go4.setVisibility(View.INVISIBLE);
+//         //   address_select_img_go5.setVisibility(View.INVISIBLE);
+//
+//
+//            address_select_tv_community.setText(communityList.get(position).getN());
+//            address_select_tv_community.setTextColor(getResources().getColor(R.color.green));
+//            address_select_tv_community.setTextColor(getResources().getColor(R.color.gray));
+//            address_select_tv_community.setText("小区");
+//            address_select_tv_building.setText("");
+//            address_select_tv_unit.setText("");
+//            address_select_tv_floor.setText("");
+//            address_select_tv_house.setText("");
+//
+//
+//            communityList.removeAll(communityList);
+//            getAddressData("mps_uptown",communityList.get(position).getI(),communityList);
+//
+//
+//            myAddressAdapter=new MyAddressAdapter(ReportActivity.this,communityList);
+//            addresslistview.setAdapter(myAddressAdapter);
+//            myAddressAdapter.notifyDataSetChanged();
+//
+//        }
+        if(count==1){
             address_select_img_go.setVisibility(View.VISIBLE);
-            address_select_img_go2.setVisibility(View.VISIBLE);
+            address_select_img_go2.setVisibility(View.INVISIBLE);
             address_select_img_go3.setVisibility(View.INVISIBLE);
             address_select_img_go4.setVisibility(View.INVISIBLE);
-            address_select_img_go5.setVisibility(View.INVISIBLE);
+       //     address_select_img_go5.setVisibility(View.INVISIBLE);
 
             address_select_tv_community.setText(communityList.get(position).getN());
             address_select_tv_community.setTextColor(getResources().getColor(R.color.green));
-            address_select_tv_area.setTextColor(getResources().getColor(R.color.green));
+      //      address_select_tv_area.setTextColor(getResources().getColor(R.color.green));
             address_select_tv_building.setTextColor(getResources().getColor(R.color.gray));
             address_select_tv_building.setText("楼栋");
             address_select_tv_unit.setText("");
@@ -914,17 +1102,17 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             myAddressAdapter.notifyDataSetChanged();
 
         }
-        if(count==3){
+        if(count==2){
             address_select_img_go.setVisibility(View.VISIBLE);
             address_select_img_go2.setVisibility(View.VISIBLE);
-            address_select_img_go3.setVisibility(View.VISIBLE);
+            address_select_img_go3.setVisibility(View.INVISIBLE);
             address_select_img_go4.setVisibility(View.INVISIBLE);
-            address_select_img_go5.setVisibility(View.INVISIBLE);
+     //       address_select_img_go5.setVisibility(View.INVISIBLE);
 
             address_select_tv_building.setText(buildingList.get(position).getN());
 
             address_select_tv_community.setTextColor(getResources().getColor(R.color.green));
-            address_select_tv_area.setTextColor(getResources().getColor(R.color.green));
+        //    address_select_tv_area.setTextColor(getResources().getColor(R.color.green));
 
             address_select_tv_building.setTextColor(getResources().getColor(R.color.green));
             address_select_tv_unit.setTextColor(getResources().getColor(R.color.gray));
@@ -940,17 +1128,17 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             myAddressAdapter.notifyDataSetChanged();
 
         }
-        if(count==4){
+        if(count==3){
             address_select_img_go.setVisibility(View.VISIBLE);
             address_select_img_go2.setVisibility(View.VISIBLE);
             address_select_img_go3.setVisibility(View.VISIBLE);
-            address_select_img_go4.setVisibility(View.VISIBLE);
-            address_select_img_go5.setVisibility(View.INVISIBLE);
+            address_select_img_go4.setVisibility(View.INVISIBLE);
+  //          address_select_img_go5.setVisibility(View.INVISIBLE);
 
             address_select_tv_unit.setText(unitList.get(position).getN());
 
             address_select_tv_community.setTextColor(getResources().getColor(R.color.green));
-            address_select_tv_area.setTextColor(getResources().getColor(R.color.green));
+      //      address_select_tv_area.setTextColor(getResources().getColor(R.color.green));
 
             address_select_tv_building.setTextColor(getResources().getColor(R.color.green));
             address_select_tv_unit.setTextColor(getResources().getColor(R.color.green));
@@ -965,16 +1153,16 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             myAddressAdapter.notifyDataSetChanged();
 
         }
-        if(count==5){
+        if(count==4){
             address_select_img_go.setVisibility(View.VISIBLE);
             address_select_img_go2.setVisibility(View.VISIBLE);
             address_select_img_go3.setVisibility(View.VISIBLE);
             address_select_img_go4.setVisibility(View.VISIBLE);
-            address_select_img_go5.setVisibility(View.VISIBLE);
+     //       address_select_img_go5.setVisibility(View.VISIBLE);
 
             address_select_tv_floor.setText(floorList.get(position).getN());
             address_select_tv_community.setTextColor(getResources().getColor(R.color.green));
-            address_select_tv_area.setTextColor(getResources().getColor(R.color.green));
+      //      address_select_tv_area.setTextColor(getResources().getColor(R.color.green));
             address_select_tv_building.setTextColor(getResources().getColor(R.color.green));
             address_select_tv_unit.setTextColor(getResources().getColor(R.color.green));
             address_select_tv_floor.setTextColor(getResources().getColor(R.color.green));
@@ -990,15 +1178,15 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             myAddressAdapter.notifyDataSetChanged();
 
         }
-        if(count==6){
+        if(count==5){
             address_select_img_go.setVisibility(View.VISIBLE);
             address_select_img_go2.setVisibility(View.VISIBLE);
             address_select_img_go3.setVisibility(View.VISIBLE);
             address_select_img_go4.setVisibility(View.VISIBLE);
-            address_select_img_go5.setVisibility(View.VISIBLE);
+       //     address_select_img_go5.setVisibility(View.VISIBLE);
 
             address_select_tv_community.setTextColor(getResources().getColor(R.color.green));
-            address_select_tv_area.setTextColor(getResources().getColor(R.color.green));
+   //         address_select_tv_area.setTextColor(getResources().getColor(R.color.green));
             address_select_tv_building.setTextColor(getResources().getColor(R.color.green));
             address_select_tv_unit.setTextColor(getResources().getColor(R.color.green));
             address_select_tv_floor.setTextColor(getResources().getColor(R.color.green));
@@ -1006,7 +1194,10 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             address_select_tv_house.setTextColor(getResources().getColor(R.color.green));
 
             address_select_tv_house.setText(houseList.get(position).getN());
-            address_select_tv_house.setTextColor(getResources().getColor(R.color.green));
+
+            myAddressAdapter=new MyAddressAdapter(ReportActivity.this,houseList);
+            addresslistview.setAdapter(myAddressAdapter);
+            myAddressAdapter.notifyDataSetChanged();
 
 
         }
@@ -1023,7 +1214,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
         params.addBodyParameter("pagesize","20");
         params.addBodyParameter("id",id);
-
+        params.addBodyParameter("depid",sp.getString("cu_depid",""));
         params.addBodyParameter("pageindex","1");
         params.addBodyParameter("qry","1");
         params.addBodyParameter("rtnds","2");

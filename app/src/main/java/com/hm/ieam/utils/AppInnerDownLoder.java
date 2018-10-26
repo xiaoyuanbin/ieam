@@ -55,6 +55,7 @@ public class AppInnerDownLoder {
             @Override
             public void run() {
                 try {
+
                     File file = downloadFile(downURL, appName, pd);
 
                     installApk(mContext, file);

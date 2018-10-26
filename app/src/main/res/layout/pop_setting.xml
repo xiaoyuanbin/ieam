@@ -75,24 +75,24 @@
         android:layout_marginRight="15dp"
 
         />
-    <LinearLayout
-        android:id="@+id/pop_my_setting_ll_help"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@color/white"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="帮助和反馈"
-            android:textColor="@color/black"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="15dp"/>
+    <!--<LinearLayout-->
+        <!--android:id="@+id/pop_my_setting_ll_help"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:background="@color/white"-->
+        <!--&gt;-->
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:text="帮助和反馈"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:background="@color/white"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:layout_marginLeft="15dp"/>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
     <!--<LinearLayout-->
         <!--android:id="@+id/pop_my_setting_ll_chage"-->
         <!--android:layout_width="match_parent"-->

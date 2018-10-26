@@ -16,52 +16,130 @@
     </com.baidu.mapapi.map.MapView>
 
 
+    <!--<RelativeLayout-->
+
+        <!--android:id="@+id/rl_top"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="80dp"-->
+        <!--android:layout_centerHorizontal="true"-->
+
+
+        <!--android:gravity="center"-->
+        <!--android:focusableInTouchMode="true"-->
+        <!--android:focusable="true"-->
+        <!--android:background="@color/white">-->
+
+        <!--&lt;!&ndash;<SearchView&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/main_searchView"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+
+            <!--&lt;!&ndash;android:background="@color/white"&ndash;&gt;-->
+
+            <!--&lt;!&ndash;android:iconifiedByDefault="false"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:queryHint="搜索"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginRight="35dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:searchIcon="@drawable/search"&ndash;&gt;-->
+
+            <!--&lt;!&ndash;/>&ndash;&gt;-->
+        <!--<TextView-->
+            <!--android:id="@+id/main_tv_name"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="left"-->
+            <!--android:layout_toEndOf="@+id/main_btn_mine"-->
+            <!--android:text="工作人员：物业测试"-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:textSize="18sp"-->
+            <!--android:layout_toRightOf="@+id/main_btn_mine" />-->
+        <!--<TextView-->
+            <!--android:id="@+id/main_tv_firm"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="left"-->
+            <!--android:layout_below="@+id/main_tv_name"-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:layout_toEndOf="@+id/main_btn_mine"-->
+            <!--android:text="所在单位：成都银葵物业发展有限公司的撒撒旦撒旦啊"-->
+            <!--android:ellipsize="end"-->
+            <!--android:maxLines="1"-->
+
+            <!--android:textColor="@color/black"-->
+            <!--android:textSize="18sp"-->
+            <!--android:layout_toRightOf="@+id/main_btn_mine" />-->
+
+        <!--<Button-->
+            <!--android:id="@+id/main_btn_mine"-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:background="@drawable/mine" />-->
+
+        <!--&lt;!&ndash;<Button&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/main_btn_scan"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="30dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="30dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_alignParentEnd="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_alignParentRight="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginRight="10dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginTop="10dp"&ndash;&gt;-->
+
+            <!--&lt;!&ndash;android:background="@drawable/scan" />&ndash;&gt;-->
+    <!--</RelativeLayout>-->
     <RelativeLayout
+        android:id="@+id/mine_rl_me"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:gravity="center_vertical"
+        android:background="@color/bg_tab"
 
-        android:id="@+id/rl_top"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="12dp"
-        android:focusableInTouchMode="true"
-        android:focusable="true"
-        android:background="@color/white">
+        >
+        <ImageView
+            android:id="@+id/main_img_mine"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
 
-        <SearchView
-            android:id="@+id/main_searchView"
+            android:background="@drawable/defulticon"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/main_tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="物业测试人员"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_toRightOf="@+id/main_img_mine"
+
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="16dp"/>
+        <TextView
+
+            android:id="@+id/main_tv_firm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="所在单位：成都银葵物业发展有限公司"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginTop="3dp"
+            android:layout_toRightOf="@+id/main_img_mine"
+            android:layout_below="@+id/main_tv_name"
+            android:layout_marginLeft="10dp"/>
+
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
 
-            android:background="@color/white"
-
-            android:iconifiedByDefault="false"
-            android:queryHint="搜索"
-            android:layout_marginRight="35dp"
-            android:searchIcon="@drawable/search"
 
             />
 
-        <Button
-            android:id="@+id/main_btn_mine"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/mine" />
-
-        <Button
-            android:id="@+id/main_btn_scan"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-
-            android:background="@drawable/scan" />
     </RelativeLayout>
-
 
     <LinearLayout
         android:id="@+id/btn_tab"
