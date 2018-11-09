@@ -31,14 +31,11 @@ public class PopWindowUtils {
 
     }
 
-
-
     /**
      *   点击巡查，维修，报修时弹出的pop
      *
      * */
     public void showPopupWindow(PopupWindow mPopupWindow) {
-
 
         mPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         // 设置PopupWindow是否能响应外部点击事件
@@ -68,8 +65,6 @@ public class PopWindowUtils {
      *
      * */
 
-
-    @SuppressLint("WrongConstant")
     public void showfullPopupWindow(PopupWindow mPopupWindow) {
 
         mPopupWindow.setBackgroundDrawable(new ColorDrawable(mActivity.getResources().getColor(R.color.bg_main)));

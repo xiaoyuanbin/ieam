@@ -61,7 +61,6 @@ public class MyRepGridAdapter extends BaseAdapter{
             viewHodler = (ViewHodler) convertView.getTag();
         }
 
-        Log.i("adpter",position+"");
 
         myGlideUtils.loadImage(context, 80, 80, viewHodler.imageView, mImages.get(position));
 

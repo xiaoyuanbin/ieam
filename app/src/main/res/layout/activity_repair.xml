@@ -19,7 +19,7 @@
             android:layout_marginLeft="10dp"
             />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="维修"
             android:textSize="18sp"
@@ -50,4 +50,5 @@
         android:text="暂无数据"
         android:textSize="20sp"
         android:layout_gravity="center" />
+
 </LinearLayout>

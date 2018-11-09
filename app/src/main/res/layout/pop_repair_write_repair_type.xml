@@ -53,6 +53,7 @@
 
                 android:layout_gravity="center_horizontal"/>
 
+
             <TextView
                 android:layout_height="1dp"
 

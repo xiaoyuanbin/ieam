@@ -2,14 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    >
     <TextView
         android:id="@+id/address_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:gravity="center_vertical"
         android:text="泉水人家"
         android:textColor="@drawable/font_selector"
+
         android:duplicateParentState="true"
         android:textSize="18sp"
         android:layout_marginLeft="15dp"

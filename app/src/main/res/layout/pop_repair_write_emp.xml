@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -21,7 +21,7 @@
             android:layout_marginLeft="10dp"
             />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="维修用工预算"
             android:textSize="18sp"
@@ -42,40 +42,23 @@
             android:paddingRight="5dp"
             />
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="vertical"
-        android:gravity="center"
 
-        >
     <EditText
         android:id="@+id/pop_repair_write_emp_edit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:textSize="18sp"
+        android:layout_height="200dp"
+        android:maxLines="8"
+        android:gravity="left|top"
+        android:hint="请输入内容......"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/edit_bg"
 
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="18sp" />
 
-        android:layout_marginRight="20dp"
-        android:background="@color/white"
-        android:ems="10" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginRight="15dp"
-            android:background="@color/bg_tab"/>
-
-    </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:textSize="15sp"
-        android:text="预算金额单位（千元）"
-        />
 </LinearLayout>

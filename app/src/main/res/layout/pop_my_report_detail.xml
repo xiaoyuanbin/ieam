@@ -38,7 +38,7 @@
     <GridView
         android:id="@+id/pop_my_report_detail_gridview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:numColumns="4"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
@@ -150,7 +150,7 @@
         <TextView
 
             android:id="@+id/pop_my_report_detail_date"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="right"
@@ -190,7 +190,7 @@
 
             android:id="@+id/pop_my_report_detail_position"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginTop="5dp"
             android:maxLines="5"

@@ -101,8 +101,8 @@ public class MyOkhttpClient {
             @Override
             public void onFailure(Call call, final IOException e) {
                 myLoadDialog.hideLoading();
-                Log.i("提交失败","提交失败");
-                toast("提交失败");
+                Log.i("连接服务器失败","连接服务器失败");
+                toast("提交失败，请检查网络");
             }
 
             @Override
@@ -111,8 +111,13 @@ public class MyOkhttpClient {
 
                 myLoadDialog.hideLoading();
                 final  String data= response.body().string();
-                Log.i("data",data);
-                toast("提交成功");
+                if(!data.equals("")) {
+                    Log.i("提交成功data=",data);
+                    toast("提交成功");
+                }else {
+                    Log.i("提交失败","提交失败");
+                    toast("提交失败");
+                }
 
             }
         });

@@ -4,8 +4,11 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -25,6 +28,7 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hm.ieam.bean.RepairBean;
@@ -32,11 +36,14 @@ import com.hm.ieam.utils.Contans;
 
 import com.hm.ieam.utils.MyGlideUtils;
 import com.hm.ieam.utils.MyOkhttpClient;
-import com.hm.ieam.widght.AddressPickerView;
+
 import com.hm.ieam.adapter.MyGridViewAdapter;
 import com.hm.ieam.utils.PhotoUtils;
 import com.hm.ieam.utils.PopWindowUtils;
 import com.hm.ieam.R;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
 import org.xutils.http.RequestParams;
 
@@ -53,17 +60,21 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
+import top.zibin.luban.OnRenameListener;
 
 public class RepairWriteActivity extends AppCompatActivity implements View.OnClickListener {
-    private List<String> mDatas;    //存放所有图片的集合
-    private List<String> imgs;    //上传的所有图片的集合
-
+    private List<String> mDatas;    //显示所有图片的集合
+    private List<String> imgs;    //缓存的所有图片的集合
+    private List<String> imgUps;    //上传的所有图片的集合
+    private List<String> mPhotots;    //相册的所有图片的集合
     private static final int CAREMA = 2;   //调用相机请求码
+    public static final int REQUEST_CODE_CHOOSE=CAREMA+1;    //上传图片
 
     PopWindowUtils popWindowUtils;
     PhotoUtils photoUtils;   //拍照工具类
     int imageId;    //编辑图片时的id
 
+    SharedPreferences datasp;
     MyOkhttpClient myOkhttpClient;
     GridView repair_write_gridview;
     MyGridViewAdapter adapter;      //显示图片的adapter
@@ -133,6 +144,7 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initData() {
+        datasp=getSharedPreferences("date",MODE_PRIVATE);
         String images="";
         Intent intent=getIntent();
         if(intent!=null) {
@@ -146,19 +158,17 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
 //            imageDescription.add("");
 //
 //        }
-
+        imgUps=new ArrayList<>();
 
         mDatas=new ArrayList<>();
-
+        mPhotots=new ArrayList<>();
         if(repairBean!=null){
             images=repairBean.getImages();
 
             if(!"".equals(images)){
                 String[] img=images.split(",");
-                for(int i=0;i<img.length;i++){
-                    Log.i("image",img[i]);
-              //      mDatas.add(img[i]);
-                    imgs.add(img[i]);
+                for(String s:img){
+                    imgs.add(s);
                 }
             }
 
@@ -213,7 +223,7 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
                 imageId = position;
                 if (position == mDatas.size()||mDatas.size()==0) {
 
-                    applyPermission(CAREMA);
+                    applyPermission();
 
                 } else {
                     startEditImage(mDatas.get(position));
@@ -238,6 +248,8 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
             repair_write_repair_costbudget.setText(repairBean.getRepair_costbudget());
             repair_write_repair_remark.setText(repairBean.getRepair_remark());
 
+        }else{
+            repair_write_repair_type.setText("入户");
         }
 
 
@@ -324,7 +336,7 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
 //            @Override
 //            public void onClick(View view) {
 //                popWindowUtils.dissPopupWindow(editPopWindow);
-//                imageDescription.set(imageId,pop_edit_img_edit.getText().toString().trim());
+//                imageDescription.set(imageId,pop_edit_img_edasit.getText().toString().trim());
 //                pop_inspect_image_text.setText(pop_edit_img_edit.getText().toString().trim());
 //            }
 //        });
@@ -332,23 +344,56 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
 //    }
 
     //拍照时动态申请权限
-    public void applyPermission(int requestCode) {
+    public void applyPermission() {
         if (EasyPermissions.hasPermissions(this, mPermissions)){
-            startCarema(requestCode);
+            showListDialog();
         }else{
 //第二个参数是提示信息
             EasyPermissions.requestPermissions(this,"请给予照相机权限,否则app无法正常运行",CAREMA,mPermissions);
         }
 
     }
+    private void showListDialog() {
+        final String[] items = { "拍照","从相册选择"};
+        AlertDialog.Builder listDialog =
+                new AlertDialog.Builder(RepairWriteActivity.this);
+        listDialog.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if(which==0){
+                    startCarema();
+                }else{
+                    upPhoto();
+                }
+            }
+        });
+        listDialog.show();
+    }
+
     //调用相机拍照
-    public void startCarema(int requestCode) {
+    public void startCarema() {
         Uri imageUri=photoUtils.getPhotoUri();
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        startActivityForResult(intent, requestCode);
+        startActivityForResult(intent, CAREMA);
     }
 
+    private void upPhoto() {
+        Matisse.from(RepairWriteActivity.this)
+                .choose(MimeType.ofAll())//ofAll()
+                .theme(R.style.Matisse_Zhihu)//主题，夜间模式R.style.Matisse_Dracula
+                .countable(true)//是否显示选中数字
+                .capture(false)//是否提供拍照功能
+                .captureStrategy(new CaptureStrategy(true, "com.hm.ieam.provider"))//存储地址
+                .maxSelectable(4-mDatas.size())//最大选择数
+                //.addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))//筛选条件
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)//屏幕方向
+                .thumbnailScale(0.85f)//缩放比例
+                .imageEngine(myGlideUtils)//图片加载方式
+                .forResult(REQUEST_CODE_CHOOSE);//请求码
+
+    }
 
     @Override
     public void onClick(View view) {
@@ -357,7 +402,16 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
                 finish();
                 break;
             case R.id.repair_write_btn_submit:
-                startUpload();
+                if(repair_write_repair_deal.getText().equals("")||repair_write_repair_state.getText().equals("报修")
+                        ||repair_write_repair_type.getText().equals("")){
+                    Toast.makeText(RepairWriteActivity.this,"请填写完后再提交",Toast.LENGTH_SHORT).show();
+
+                }
+                else{
+                    imgUps.clear();
+                    startUpload();
+                }
+
                 break;
 
 
@@ -581,6 +635,11 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
         normalDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        imgUps.addAll(mDatas);
+//                        if(mDatas.size()>0){
+//                            for(int i=0;i<mDatas.size();i++)
+//                            imgUps.add(mDatas.get(i));
+//                        }
                         if(imgs.size()>0){
                             for(int i=0;i<imgs.size();i++){
 
@@ -589,22 +648,20 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
                                 File oldPath=myGlideUtils.getCacheFile(imgs.get(i),RepairWriteActivity.this);
                                 String newPath="";
                                 if(oldPath!=null){
-                                    newPath=photoUtils.copyFile(oldPath.toString(),photoUtils.getPhotoFile().toString());
+                                    newPath=photoUtils.copyFile(oldPath.toString(),new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                                            + "/ieam/image/"+datasp.getString("c_name","")+System.currentTimeMillis() + ".png").toString());
                                 }
 
                                 Log.i("newPath",newPath);
 
                                 if(!newPath.equals("")) {
-                                    mDatas.add(i, newPath);
+                                    imgUps.add(i, newPath);
                                 }
 
                             }
-
-
                         }
-                        Log.i("size",mDatas.size()+"");
+                        Log.i("size",imgUps.size()+"");
                         Map<String,String> params=new HashMap<>();
-
                         params.put("r_id ",repairBean.getId());
                         params.put("r_state",repair_write_repair_state.getText().toString());
 
@@ -625,8 +682,8 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
 
 
 
-                        Log.i("mdatas.size" ,mDatas.size()+"");
-                        myOkhttpClient.uploadImage(params,mDatas);
+                        Log.i("提交uri",Contans.uri+"?"+params.toString());
+                        myOkhttpClient.uploadImage(params,imgUps);
 
 
                     }
@@ -652,7 +709,7 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
     @AfterPermissionGranted(CAREMA)//请求码
     private void after() {
         if (EasyPermissions.hasPermissions(this, mPermissions)){
-            startCarema(CAREMA);
+            showListDialog();
         }else{
             EasyPermissions.requestPermissions(this,"请给予照相机权限,否则app无法正常运行",CAREMA,mPermissions);
         }
@@ -660,50 +717,108 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==REQUEST_CODE_CHOOSE){
+            if(resultCode==RESULT_OK) {
+
+                luban(Matisse.obtainPathResult(data));
+
+            }
+        }
+
         if (requestCode == CAREMA && resultCode == RESULT_OK) {
 
-
-
-            //开启子线程压缩图片
-            new Thread(){
-                @Override
-                public void run() {
-                    super.run();
-                    Luban.with(RepairWriteActivity.this)
-                            .load(photoUtils.getPhotoFile())                                   // 传入要压缩的图片列表
-                            .ignoreBy(100)                                  // 忽略不压缩图片的大小
-                            .setCompressListener(new OnCompressListener() { //设置回调
-                                @Override
-                                public void onStart() {
-                                    // TODO 压缩开始前调用，可以在方法内启动 loading UI
-                                }
-
-                                @Override
-                                public void onSuccess(File file) {
-                              //      imgs.add(file.toString());
-                                    mDatas.add(file.toString());
-
-                                    Log.i("压缩成功",mDatas.size()+"");
-                             //       adapter.notifyDataSetChanged();
-                                    notifyDataSetChanged();
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    // TODO 当压缩过程出现问题时调用
-                                }
-                            }).launch();    //启动压缩
-
-
-
-                }
-            }.start();
-
-
+            luban(photoUtils.getPhotoFile());
 
         }
     }
 
+
+    //选择相册后压缩
+    public void luban(final List<String> imgs){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                Luban.with(RepairWriteActivity.this)
+                        .load(imgs)                                   // 传入要压缩的图片列表
+                        .setRenameListener(new OnRenameListener() {
+                            @Override
+                            public String rename(String filePath) {
+                                return datasp.getString("c_name","")+System.currentTimeMillis() + ".png";
+                            }
+                        })
+                        .ignoreBy(100)                                  // 忽略不压缩图片的大小
+                        .setCompressListener(new OnCompressListener() { //设置回调
+                            @Override
+                            public void onStart() {
+                                // TODO 压缩开始前调用，可以在方法内启动 loading UI
+                            }
+
+                            @Override
+                            public void onSuccess(File file) {
+
+                                mDatas.add(file.toString());
+
+                                notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                // TODO 当压缩过程出现问题时调用
+                            }
+                        }).launch();    //启动压缩
+
+
+
+            }
+        }.start();
+
+    }
+
+    //拍照完成后压缩
+    public void luban(final File file){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                Luban.with(RepairWriteActivity.this)
+                        .load(file)                                   // 传入要压缩的图片列表
+                        .setRenameListener(new OnRenameListener() {
+                            @Override
+                            public String rename(String filePath) {
+                                return datasp.getString("c_name","")+System.currentTimeMillis() + ".png";
+                            }
+                        })
+                        .ignoreBy(100)                                  // 忽略不压缩图片的大小
+                        .setCompressListener(new OnCompressListener() { //设置回调
+                            @Override
+                            public void onStart() {
+                                // TODO 压缩开始前调用，可以在方法内启动 loading UI
+                            }
+
+                            @Override
+                            public void onSuccess(File file) {
+                                //      imgs.add(file.toString());
+                                mDatas.add(file.toString());
+
+                                Log.i("压缩成功",mDatas.size()+"");
+                                //       adapter.notifyDataSetChanged();
+                                notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                // TODO 当压缩过程出现问题时调用
+                            }
+                        }).launch();    //启动压缩
+
+
+
+            }
+        }.start();
+
+    }
 
 
     //更新gridview
@@ -718,6 +833,6 @@ public class RepairWriteActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        myGlideUtils.clearImageAllCache(RepairWriteActivity.this);
     }
 }

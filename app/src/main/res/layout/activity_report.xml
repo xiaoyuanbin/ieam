@@ -23,7 +23,7 @@
             android:background="@drawable/back" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -34,6 +34,14 @@
 
     </LinearLayout>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
     <GridView
         android:id="@+id/report_gridview"
         android:layout_width="match_parent"
@@ -86,7 +94,7 @@
 
         <TextView
             android:id="@+id/report_address"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="2dp"
@@ -145,7 +153,7 @@
 
         <TextView
             android:id="@+id/report_firm"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="2dp"
@@ -200,7 +208,7 @@
 
         <TextView
             android:id="@+id/report_type"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="2dp"
@@ -255,7 +263,7 @@
 
         <TextView
             android:id="@+id/report_position"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="2dp"
@@ -274,7 +282,116 @@
             />
 
     </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
 
+        android:layout_height="1dp"
+
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="15dp"
+
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp"
+        android:background="#90909090" />
+
+    <LinearLayout
+        android:id="@+id/report_ll_user"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/user" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="报修用户"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/report_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/report_user_go"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/go"
+
+            />
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+
+        android:layout_height="1dp"
+
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="15dp"
+
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp"
+        android:background="#90909090" />
+
+    <LinearLayout
+        android:id="@+id/report_ll_phone"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/phone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="用户电话"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/report_phone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/report_phone_go"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/go"
+
+            />
+
+    </LinearLayout>
     <TextView
         android:layout_width="match_parent"
 
@@ -310,13 +427,13 @@
 
         <TextView
             android:id="@+id/report_time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="2dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:textColor="@color/black"
+
             android:textSize="15sp" />
 
         <Button
@@ -329,34 +446,88 @@
             />
 
     </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
 
-    <TextView
-        android:layout_width="match_parent"
+                android:layout_height="1dp"
 
-        android:layout_height="1dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="15dp"
 
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
+                android:background="#90909090" />
 
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="5dp"
-        android:background="#90909090" />
+            <LinearLayout
+                android:id="@+id/report_ll_opinion"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/remark" />
 
-    <Button
-        android:id="@+id/report_submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="物业单位意见"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
 
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="20dp"
-        android:text="提交"
-        android:background="@drawable/bg_btn_submit"
-        android:textColor="@color/white"
-        android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/report_opinion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/report_opinion_go"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/go"
+
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
+                android:background="#90909090" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/report_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="20dp"
+                android:text="提交"
+                android:background="@drawable/bg_btn_submit"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

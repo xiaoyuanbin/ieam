@@ -53,30 +53,31 @@
                 android:resource="@xml/file_paths_public" />
         </provider>
 
-        <receiver android:name=".utils.ApkInstallReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
-            </intent-filter>
-        </receiver>
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name=".activity.WelcomeActivity">
+        <activity android:name=".activity.WelcomeActivity"
+
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ReportActivity" />
-        <activity android:name=".activity.RepairActivity" />
-        <activity android:name=".activity.InspectActivity" />
-        <activity android:name=".activity.RepairWriteActivity" />
-        <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.AssetsActivity"></activity>
+        <activity android:name=".activity.ReportActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.RepairActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.InspectActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.RepairWriteActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

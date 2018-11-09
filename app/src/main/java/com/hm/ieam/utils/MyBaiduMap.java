@@ -26,6 +26,7 @@ import com.baidu.mapapi.search.poi.PoiDetailResult;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
+import com.hm.ieam.MyApplication;
 
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +41,8 @@ public class MyBaiduMap {
     private MyLocationListener myListener = new MyLocationListener();
     int accuracyCircleFillColor = 0xAAFFFF88;//自定义精度圈填充颜色
     int accuracyCircleStrokeColor = 0xAA00FF00;//自定义精度圈边框颜色
+    private double lat;
+    private double lon;
     MyLocationConfiguration.LocationMode mCurrentMode;
     BitmapDescriptor mCurrentMarker;
     private boolean isFirstLoc = true; // 是否首次定位
@@ -47,6 +50,9 @@ public class MyBaiduMap {
         this.context=context;
         this.mMapView=mMapView;
         initMap();
+    }
+    public MyBaiduMap() {
+
     }
 
 
@@ -109,12 +115,25 @@ public class MyBaiduMap {
     public void searchPosition(String address) {
 
     }
+    //获取纬度
+    public String getLatitude() {
 
+        return lat+"";
+    }
+    //获取经度
+    public String getLongitude() {
+        return lon+"";
+    }
 
     class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location){
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+       //     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            lat=location.getLatitude();
+            lon=location.getLongitude();
+            MyApplication.lon=location.getLongitude();
+            MyApplication.lat=location.getLatitude();
+
             // 构造定位数据
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())

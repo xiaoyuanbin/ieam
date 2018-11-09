@@ -86,6 +86,7 @@ import org.xutils.x;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -97,14 +98,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     XListView inspectListView;
     XListView reportListView;
     XListView repairListView;
-    XListView assetsListView;
 
 
     List<String> mDatas;        //存放图片路径
     MyInspectAdapter myInspectAdapter;   //我的巡查适配器
     MyReportAdapter myReportAdapter;     //我的报修适配器
     MyRepairAdapter myRepairAdapter;     //我的维修适配器
-    MyAssetsAdapter myAssetsAdapter;     //我的固定资产
+   // MyAssetsAdapter myAssetsAdapter;     //我的固定资产
 
     MyRepGridAdapter adapter;          //报修详情适配器
     String[] mPermissions=new String[]{Manifest.permission.READ_PHONE_STATE
@@ -119,14 +119,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String tb_name;    //删除巡查
     HashMap<String, ArrayList<HashMap<String, String>>> jsonMap; //存放解析json数据的结果
     public static final int SCAN=1;      //扫码
-    public static final int REPORT=2;
-    public static final int REPAIR=REPORT+1;
-    public static final int INSPECT=REPAIR+1;
-    public static final int LOGIN=INSPECT+1;
-    public static final int REQUEST_CODE_CHOOSE=LOGIN+1;
-    public static final int HOUSE=REQUEST_CODE_CHOOSE+1;
-    public static final int EQUIPMENT=HOUSE+1;
-    public static final int LOCATION=EQUIPMENT+1;
+    public static final int REPORT=2;    //报修
+    public static final int REPAIR=REPORT+1;    //维修
+    public static final int INSPECT=REPAIR+1; //巡查
+    public static final int LOGIN=INSPECT+1;   //登录
+    public static final int REQUEST_CODE_CHOOSE=LOGIN+1;    //上传图片
+    public static final int HOUSE=REQUEST_CODE_CHOOSE+1; //房屋
+    public static final int EQUIPMENT=HOUSE+1;       //设备
+    public static final int LOCATION=EQUIPMENT+1;   //定位
+    public static final int ASSETS=LOCATION+1;        //固定资产
     int state=0;          //跳转界面
     int inspect=1;   //巡查列表页数
     int report=1;    //报修列表页数
@@ -138,6 +139,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Uri iconUri;         //上传头像
     MyLoadDialog myLoadDialog;     //加载对话框
     private SharedPreferences sp;
+    private SharedPreferences.Editor editor;
+
     boolean isLogin=false;
     private MapView mMapView;       //显示地图
     PopWindowUtils popWindowUtils;    //窗口工具类
@@ -175,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     List<RepairBean> reportList;    //维修记录
     List<RepairBean> repairList;    //维修记录
     List<InspectBean> inspectList;   //巡查记录
-    List<AssetsBean> assetsList;   //巡查记录
+ //   List<AssetsBean> assetsList;   //巡查记录
     UpdateInfo info;
     AlertDialog.Builder mDialog;
     String versionName;   //版本名称
@@ -199,10 +202,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         initPopupWindow();
 
-        myGlideUtils=new MyGlideUtils();
-        myLoadDialog=new MyLoadDialog(this);
-
-
     }
 
     //判断下载状态
@@ -223,8 +222,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //app更新
-    private void forceUpdate(final Context context, final String downUrl, final String updateinfo) {
-            mDialog = new AlertDialog.Builder(context);
+    private void forceUpdate(final String downUrl, final String updateinfo) {
+            mDialog = new AlertDialog.Builder(this);
             mDialog.setTitle("应用升级");
             mDialog.setMessage(updateinfo);
 
@@ -249,12 +248,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Log.i("以后再说", "以后再说" + downUrl);
-//                if (!canDownloadState()) {
-//                    showDownloadSetting();
-//                    return;
-//                }
-//                //      DownLoadApk.download(MainActivity.this,downUrl,updateinfo,appName);
-//                AppInnerDownLoder.downLoadApk(MainActivity.this,downUrl,appName);
+
                 }
             });
             mDialog.show();
@@ -331,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 if(isUpdate) {
-                    forceUpdate(MainActivity.this,  info.getUrl(), info.getContent());
+                    forceUpdate(info.getUrl(), info.getContent());
                 }
 
             }
@@ -366,34 +360,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         repairList=new ArrayList<>();
         inspectList=new ArrayList<>();
         reportList=new ArrayList<>();
-        assetsList=new ArrayList<>();
+   //     assetsList=new ArrayList<>();
 
 
         mDatas=new ArrayList<>();
 
+        myGlideUtils=new MyGlideUtils();
+        myLoadDialog=new MyLoadDialog(this);
         getIsLogin();
 
     }
 
 
     private void initView() {
-//
-//        main_searchView=findViewById(R.id.main_searchView);
-//        if (main_searchView != null) {
-//            try {        //--拿到字节码
-//                Class<?> argClass = main_searchView.getClass();
-//                //--指定某个私有属性,mSearchPlate是搜索框父布局的名字
-//                Field ownField = argClass.getDeclaredField("mSearchPlate");
-//                //--暴力反射,只有暴力反射才能拿到私有属性
-//                ownField.setAccessible(true);
-//                View mView = (View) ownField.get(main_searchView);
-//                //--设置背景
-//                mView.setBackgroundColor(Color.TRANSPARENT);
-//                mView.clearFocus();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
+
 
         mMapView = findViewById(R.id.mmap);
         Button main_btn_inspect=findViewById(R.id.main_btn_inspect);
@@ -444,36 +424,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * */
     private void initPopupWindow() {
 
-        //     View slidewView=LayoutInflater.from(this).inflate(R.layout.pop_right, null, false);
-
         popWindowUtils=new PopWindowUtils(this);
 
     }
-//    //用户输入字符时激发该方法
-//    @Override
-//    public boolean onQueryTextChange(String newText) {
-//        if(TextUtils.isEmpty(newText))
-//        {
-//
-//            //内容为空进入
-//         //   Toast.makeText(this, "输入的字符", Toast.LENGTH_SHORT).show();
-//        }
-//        else
-//        {
-//            //输了内容之后进入，还有当删除一个字符也会进入前提输入框了不为空。
-//         //   Toast.makeText(this, "你输入的内容为"+newText, Toast.LENGTH_SHORT).show();
-//        }
-//        return true;
-//    }
-//
-//    //单击三角搜索按钮时激发该方法，如果输入框为空则不调用
-//    @Override
-//    public boolean onQueryTextSubmit(String query) {
-//        Log.i("搜索",query);
-//        myBaiduMap.searchPosition(query);
-//     //   Toast.makeText(this, "你点击了搜索框！", Toast.LENGTH_SHORT).show();
-//        return true;
-//    }
 
     @Override
     public void onClick(View view) {
@@ -548,7 +501,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     else if(sp.getString("cu_depid","001").equals("001003")){
                         Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
-                    }else {
+                    }else{
                         Log.i("report","我是报修单位");
                         state = REPORT;
                         start();
@@ -587,7 +540,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                popWindowUtils.showfullPopupWindow(mWebPopWindow);
 //                break;
 
-                /**
+                /*
                  * 主界面窗口点击事件
                  * */
 
@@ -603,10 +556,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 popWindowUtils.dissPopupWindow(inspectPopWindow);
                 start();
                 break;
-            case R.id.pop_main_inspect_property:
+            case R.id.pop_main_inspect_assets:
+                obj=ASSETS;
                 Log.i("点击巡查","选择资产");
                 popWindowUtils.dissPopupWindow(inspectPopWindow);
-                startAssetsActivity();
+                start();
                 break;
 
 
@@ -632,7 +586,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void initWebPop() {
+   /* private void initWebPop() {
         View webView=LayoutInflater.from(this).inflate(R.layout.pop_main_webview, null, false);
         mWebPopWindow=new PopupWindow(webView, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT, true);
@@ -661,7 +615,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         }
     }
-
+*/
     /**
      *
      * 判断账号是否失效
@@ -678,6 +632,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
+        editor=sp.edit();
 
 
 
@@ -714,96 +669,95 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     else{
                         isLogin=true;
-                  //      sp.edit().clear().commit();
+
                         for (HashMap<String, String> dsMap : list) {
 
                             //取出想要的数据
                             for (String key : dsMap.keySet()) {
                                 if (key.equals("cu_userid")) {
-                                    sp.edit().putString("cu_userid", dsMap.get(key)).commit();
+                                    editor.putString("cu_userid", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_usercode")) {
-                                    sp.edit().putString("cu_usercode", dsMap.get(key)).commit();
+                                    editor.putString("cu_usercode", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_username")) {
-                                    sp.edit().putString("cu_username", dsMap.get(key)).commit();
+                                    editor.putString("cu_username", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_userid1")) {
-                                    sp.edit().putString("cu_userid1", dsMap.get(key)).commit();
+                                    editor.putString("cu_userid1", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_depid")) {
 
-                                    sp.edit().putString("cu_depid", dsMap.get(key)).commit();
+                                    editor.putString("cu_depid", dsMap.get(key));
 
                                 }
                                 if (key.equals("dep_name")) {
 
-                                    sp.edit().putString("dep_name", dsMap.get(key)).commit();
+                                    editor.putString("dep_name", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_cmpid")) {
-                                    sp.edit().putString("cu_cmpid", dsMap.get(key)).commit();
+                                    editor.putString("cu_cmpid", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_mobile")) {
-                                    sp.edit().putString("cu_mobile", dsMap.get(key)).commit();
+                                    editor.putString("cu_mobile", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_contact")) {
-                                    sp.edit().putString("cu_contact", dsMap.get(key)).commit();
+                                    editor.putString("cu_contact", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_contact1")) {
-                                    sp.edit().putString("cu_contact1", dsMap.get(key)).commit();
+                                    editor.putString("cu_contact1", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_islogin")) {
-                                    sp.edit().putString("cu_islogin", dsMap.get(key)).commit();
+                                    editor.putString("cu_islogin", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_photo")) {
-                                    sp.edit().putString("cu_photo", dsMap.get(key)).commit();
+                                    editor.putString("cu_photo", dsMap.get(key));
 
                                 }
 
                                 if (key.equals("cu_type")) {
-                                    sp.edit().putString("cu_type", dsMap.get(key)).commit();
+                                    editor.putString("cu_type", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_compid")) {
-                                    sp.edit().putString("cu_compid", dsMap.get(key)).commit();
+                                    editor.putString("cu_compid", dsMap.get(key));
 
                                 }
 
                                 if (key.equals("cu_ispatrol")) {
-//                                    if(!sp.getString("cu_ispatrol","").equals(dsMap.get(key))){
-//                                        Toast.makeText(MainActivity.this,"您的权限已变更，请重新登录",Toast.LENGTH_SHORT).show();
-//                                    }
-                                    sp.edit().putString("cu_ispatrol", dsMap.get(key)).commit();
+
+                                    editor.putString("cu_ispatrol", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_isrepair")) {
 
-                                    sp.edit().putString("cu_isrepair", dsMap.get(key)).commit();
+                                    editor.putString("cu_isrepair", dsMap.get(key));
 
                                 }
                                 if (key.equals("cu_ismaintain")) {
 
-                                    sp.edit().putString("cu_ismaintain", dsMap.get(key)).commit();
+                                    editor.putString("cu_ismaintain", dsMap.get(key));
 
                                 }
                                 if (key.equals("c_name")) {
 
-                                    sp.edit().putString("c_name", dsMap.get(key)).commit();
+                                    editor.putString("c_name", dsMap.get(key));
 
                                 }
 
 
                             }
+                            editor.commit();
                         }
                         main_tv_name.setText(sp.getString("cu_username","暂无数据"));
                         main_tv_firm.setText("所属单位:"+sp.getString("c_name","暂无数据"));
@@ -968,7 +922,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Button mine_btn_back=mineView.findViewById(R.id.mine_btn_back);
         View mine_rl_me=mineView.findViewById(R.id.mine_rl_me);
-        View mine_ll_assets=mineView.findViewById(R.id.mine_ll_assets);
+
         View mine_ll_reapir=mineView.findViewById(R.id.mine_ll_reapir);
         View mine_ll_report=mineView.findViewById(R.id.mine_ll_report);
         View mine_ll_inspect=mineView.findViewById(R.id.mine_ll_inspect);
@@ -998,33 +952,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        mine_ll_assets.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(sp.getString("cu_depid","001").equals("001002")){
-                    if(!sp.getString("cu_ispatrol","0").equals("1")){
-                        Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        assetsList.removeAll(assetsList);
-
-                        getAssetsData(1);
-                        initMyAssets();
-                        popWindowUtils.showfullPopupWindow(mAssetsPopWindow);
-                    }
-
-                }
-                else if(sp.getString("cu_depid","001").equals("001003")){
-                    Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
-                }else {
-                    assetsList.removeAll(assetsList);
-
-                    getAssetsData(1);
-                    initMyAssets();
-                    popWindowUtils.showfullPopupWindow(mAssetsPopWindow);
-                }
-            }
-        });
+//        mine_ll_assets.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(sp.getString("cu_depid","001").equals("001002")){
+//                    if(!sp.getString("cu_ispatrol","0").equals("1")){
+//                        Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
+//                    }
+//                    else{
+//                        assetsList.removeAll(assetsList);
+//
+//                        getAssetsData(1);
+//                        initMyAssets();
+//                        popWindowUtils.showfullPopupWindow(mAssetsPopWindow);
+//                    }
+//
+//                }
+//                else if(sp.getString("cu_depid","001").equals("001003")){
+//                    Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
+//                }else {
+//                    assetsList.removeAll(assetsList);
+//
+//                    getAssetsData(1);
+//                    initMyAssets();
+//                    popWindowUtils.showfullPopupWindow(mAssetsPopWindow);
+//                }
+//            }
+//        });
         mine_ll_reapir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1033,7 +987,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        repairList.removeAll(repairList);
+                        repairList.clear();
 
                         getRepairDate(1);
                         initMyRepairPop();
@@ -1044,7 +998,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 else if(sp.getString("cu_depid","001").equals("001004")){
                     Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                 }else {
-                    repairList.removeAll(repairList);
+                    repairList.clear();
 
                     getRepairDate(1);
                     initMyRepairPop();
@@ -1061,7 +1015,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        reportList.removeAll(reportList);
+                        reportList.clear();
 
                         getReportDate(1);
                         initMyReportPop();
@@ -1072,7 +1026,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 else if(sp.getString("cu_depid","001").equals("001003")){
                     Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                 }else {
-                    reportList.removeAll(reportList);
+                    reportList.clear();
 
                     getReportDate(1);
                     initMyReportPop();
@@ -1088,7 +1042,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        inspectList.removeAll(inspectList);
+                        inspectList.clear();
 
                         getInspectData(1);
                         initMyInspectPop();
@@ -1099,7 +1053,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 else if(sp.getString("cu_depid","001").equals("001003")){
                     Toast.makeText(MainActivity.this,"您没有权限执行该功能",Toast.LENGTH_SHORT).show();
                 }else {
-                    inspectList.removeAll(inspectList);
+                    inspectList.clear();
 
                     getInspectData(1);
                     initMyInspectPop();
@@ -1139,210 +1093,210 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      * 初始化我的固定资产界面
      * */
-    private void initMyAssets() {
-        View view=LayoutInflater.from(this).inflate(R.layout.pop_my_community, null, false);
-
-        mAssetsPopWindow=new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT, true);
-
-        Button pop_my_assets_btn_back=view.findViewById(R.id.pop_my_assets_btn_back);
-
-        assetsListView=view.findViewById(R.id.my_assets_xlv);
-        TextView tv_empty=view.findViewById(R.id.pop_my_assets_tv_empty);
-
-
-
-        myAssetsAdapter=new MyAssetsAdapter(MainActivity.this, assetsList, new MyAssetsAdapter.OnItemDeleteClickListener() {
-            @Override
-            public void onItemDeleteClick(final String id, final int position) {
-                Log.i("delete",id);
-                final AlertDialog.Builder normalDialog =
-                        new AlertDialog.Builder(MainActivity.this);
-                normalDialog.setTitle("温馨提示");
-                normalDialog.setMessage("确定删除该记录？");
-                normalDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        tb_name = "assets_del";
-                        RequestParams params = new RequestParams(Contans.uri);
-                        params.addBodyParameter("sqlcmd", "assets_del");
-                        params.addBodyParameter("a_id", id);
-
-                        deleteAssets(id, position, params);
-                    }
-                });
-                normalDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //...To-do
-                    }
-                });
-                // 显示
-                normalDialog.show();
-
-
-
-
-            }
-        });
-    //    myAssetsAdapter=new MyAssetsAdapter(MainActivity.this, assetsList);
-        assetsListView.setAdapter(myAssetsAdapter);
-
-        assetsListView.setPullRefreshEnable(true);
-        assetsListView.setPullLoadEnable(true);
-
-        assetsListView.setEmptyView(tv_empty);
-        assetsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                Log.i("position",position+"");
-                int assetsId=position-1;
-                initAssetsDetailPop(assetsId);
-
-//                Intent intent = new Intent(MainActivity.this, AssetsActivity.class);
-//                intent.putExtra("AssetsBean", assetsList.get(position-1));
-//                MainActivity.this.startActivity(intent);
-            }
-        });
-        assetsListView.setXListViewListener(new XListView.IXListViewListener() {
-            @Override
-            public void onRefresh() {
-                assetsList.removeAll(assetsList);
-                assets=1;
-                getAssetsData(assets);
-                assetsListView.stopRefresh();
-
-
-            }
-
-            @Override
-            public void onLoadMore() {
-
-                assets++;
-                getAssetsData(assets);
-                assetsListView.stopLoadMore();
-
-            }
-        });
-
-
-
-
-
-
-        pop_my_assets_btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                popWindowUtils.dissPopupWindow(mAssetsPopWindow);
-            }
-        });
-
-    }
-
-    //查看固定资产详情
-    private void initAssetsDetailPop(int assetsId) {
-
-        mDatas.removeAll(mDatas);
-
-        String images=assetsList.get(assetsId).getImages();
-
-        if(!"".equals(images)){
-            String[] img=images.split(",");
-            for(int i=0;i<img.length;i++){
-                mDatas.add(img[i]);
-            }
-        }
-
-        final View view= LayoutInflater.from(this).inflate(R.layout.pop_my_assets_detail,null,false);
-
-        detailPopWindow=new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT, true);
-        popWindowUtils.showfullPopupWindow(detailPopWindow);
-
-        GridView assets_detail_gridview=view.findViewById(R.id.assets_detail_gridview);
-
-
-
-        Button assets_detail_btn_back=view.findViewById(R.id.assets_detail_btn_back);
-        TextView assets_detail_position=view.findViewById(R.id.assets_detail_position);
-        TextView assets_detail_card=view.findViewById(R.id.assets_detail_card);
-        TextView assets_detail_id=view.findViewById(R.id.assets_detail_id);
-        TextView assets_detail_name=view.findViewById(R.id.assets_detail_name);
-        TextView assets_detail_value=view.findViewById(R.id.assets_detail_value);
-        TextView assets_detail_address=view.findViewById(R.id.assets_detail_address);
-        TextView assets_detail_start_date=view.findViewById(R.id.assets_detail_start_date);
-        TextView assets_detail_use_year=view.findViewById(R.id.assets_detail_use_year);
-        TextView inspect_detail_way=view.findViewById(R.id.inspect_detail_way);
-        TextView assets_detail_use_dep=view.findViewById(R.id.assets_detail_use_dep);
-        TextView assets_detail_entry_date=view.findViewById(R.id.assets_detail_entry_date);
-        TextView assets_detail_deprecia=view.findViewById(R.id.assets_detail_deprecia);
-        TextView assets_detail_model=view.findViewById(R.id.assets_detail_model);
-        TextView assets_detail_status=view.findViewById(R.id.assets_detail_status);
-        TextView assets_detail_remark=view.findViewById(R.id.assets_detail_remark);
-
-
-
-        //     TextView inspect_detail_write=view.findViewById(R.id.inspect_detail_write);
-
-        assets_detail_btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                popWindowUtils.dissPopupWindow(detailPopWindow);
-            }
-        });
-
-//        inspect_detail_write.setOnClickListener(new View.OnClickListener() {
+//    private void initMyAssets() {
+//        View view=LayoutInflater.from(this).inflate(R.layout.pop_my_community, null, false);
+//
+//        mAssetsPopWindow=new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
+//                ViewGroup.LayoutParams.MATCH_PARENT, true);
+//
+//        Button pop_my_assets_btn_back=view.findViewById(R.id.pop_my_assets_btn_back);
+//
+//        assetsListView=view.findViewById(R.id.my_assets_xlv);
+//        TextView tv_empty=view.findViewById(R.id.pop_my_assets_tv_empty);
+//
+//
+//
+//        myAssetsAdapter=new MyAssetsAdapter(MainActivity.this, assetsList, new MyAssetsAdapter.OnItemDeleteClickListener() {
 //            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, InspectActivity.class);
-//                intent.putExtra("InspectBean", inspectList.get(inspectId));
-//                MainActivity.this.startActivity(intent);
+//            public void onItemDeleteClick(final String id, final int position) {
+//                Log.i("delete",id);
+//                final AlertDialog.Builder normalDialog =
+//                        new AlertDialog.Builder(MainActivity.this);
+//                normalDialog.setTitle("温馨提示");
+//                normalDialog.setMessage("确定删除该记录？");
+//                normalDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        tb_name = "assets_del";
+//                        RequestParams params = new RequestParams(Contans.uri);
+//                        params.addBodyParameter("sqlcmd", "assets_del");
+//                        params.addBodyParameter("a_id", id);
+//
+//                        deleteAssets(id, position, params);
+//                    }
+//                });
+//                normalDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        //...To-do
+//                    }
+//                });
+//                // 显示
+//                normalDialog.show();
+//
+//
+//
+//
 //            }
 //        });
-
-        assets_detail_position.setSingleLine(true);//设置单行显示
-        assets_detail_position.setHorizontallyScrolling(true);//设置水平滚动效
-
-        Log.i("mDatas.size()",mDatas.size()+"");
-
-        assets_detail_position.setText(assetsList.get(assetsId).getPosition());
-        assets_detail_card.setText(assetsList.get(assetsId).getCard());
-        assets_detail_id.setText(assetsList.get(assetsId).getId());
-        assets_detail_name.setText(assetsList.get(assetsId).getName());
-        assets_detail_value.setText(assetsList.get(assetsId).getValue());
-        assets_detail_address.setText(assetsList.get(assetsId).getAddress());
-        assets_detail_start_date.setText(assetsList.get(assetsId).getStartdate());
-        assets_detail_use_year.setText(assetsList.get(assetsId).getUsemonth());
-        inspect_detail_way.setText(assetsList.get(assetsId).getWay());
-        assets_detail_use_dep.setText(assetsList.get(assetsId).getUsedep());
-        assets_detail_entry_date.setText(assetsList.get(assetsId).getEntrydate());
-        assets_detail_deprecia.setText(assetsList.get(assetsId).getDeprecia());
-        assets_detail_model.setText(assetsList.get(assetsId).getModel());
-        assets_detail_status.setText(assetsList.get(assetsId).getStatus());
-        assets_detail_remark.setText(assetsList.get(assetsId).getRemark());
-
-
-        adapter=new MyRepGridAdapter(this,mDatas);
-        assets_detail_gridview.setAdapter(adapter);
-        assets_detail_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("position", position + "");
-                Log.i("mDatas.size()", mDatas.size() + "");
-                imageId = position;
-
-                startEditImage(mDatas.get(position));
-
-            }
-
-        });
-
-
-
-
-
-    }
+//    //    myAssetsAdapter=new MyAssetsAdapter(MainActivity.this, assetsList);
+//        assetsListView.setAdapter(myAssetsAdapter);
+//
+//        assetsListView.setPullRefreshEnable(true);
+//        assetsListView.setPullLoadEnable(true);
+//
+//        assetsListView.setEmptyView(tv_empty);
+//        assetsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//
+//                Log.i("position",position+"");
+//                int assetsId=position-1;
+//                initAssetsDetailPop(assetsId);
+//
+////                Intent intent = new Intent(MainActivity.this, AssetsActivity.class);
+////                intent.putExtra("AssetsBean", assetsList.get(position-1));
+////                MainActivity.this.startActivity(intent);
+//            }
+//        });
+//        assetsListView.setXListViewListener(new XListView.IXListViewListener() {
+//            @Override
+//            public void onRefresh() {
+//                assetsList.removeAll(assetsList);
+//                assets=1;
+//                getAssetsData(assets);
+//                assetsListView.stopRefresh();
+//
+//
+//            }
+//
+//            @Override
+//            public void onLoadMore() {
+//
+//                assets++;
+//                getAssetsData(assets);
+//                assetsListView.stopLoadMore();
+//
+//            }
+//        });
+//
+//
+//
+//
+//
+//
+//        pop_my_assets_btn_back.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                popWindowUtils.dissPopupWindow(mAssetsPopWindow);
+//            }
+//        });
+//
+//    }
+//
+//    //查看固定资产详情
+//    private void initAssetsDetailPop(int assetsId) {
+//
+//        mDatas.removeAll(mDatas);
+//
+//        String images=assetsList.get(assetsId).getImages();
+//
+//        if(!"".equals(images)){
+//            String[] img=images.split(",");
+//            for(int i=0;i<img.length;i++){
+//                mDatas.add(img[i]);
+//            }
+//        }
+//
+//        final View view= LayoutInflater.from(this).inflate(R.layout.pop_my_assets_detail,null,false);
+//
+//        detailPopWindow=new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
+//                ViewGroup.LayoutParams.MATCH_PARENT, true);
+//        popWindowUtils.showfullPopupWindow(detailPopWindow);
+//
+//        GridView assets_detail_gridview=view.findViewById(R.id.assets_detail_gridview);
+//
+//
+//
+//        Button assets_detail_btn_back=view.findViewById(R.id.assets_detail_btn_back);
+//        TextView assets_detail_position=view.findViewById(R.id.assets_detail_position);
+//        TextView assets_detail_card=view.findViewById(R.id.assets_detail_card);
+//        TextView assets_detail_id=view.findViewById(R.id.assets_detail_id);
+//        TextView assets_detail_name=view.findViewById(R.id.assets_detail_name);
+//        TextView assets_detail_value=view.findViewById(R.id.assets_detail_value);
+//        TextView assets_detail_address=view.findViewById(R.id.assets_detail_address);
+//        TextView assets_detail_start_date=view.findViewById(R.id.assets_detail_start_date);
+//        TextView assets_detail_use_year=view.findViewById(R.id.assets_detail_use_year);
+//        TextView inspect_detail_way=view.findViewById(R.id.inspect_detail_way);
+//        TextView assets_detail_use_dep=view.findViewById(R.id.assets_detail_use_dep);
+//        TextView assets_detail_entry_date=view.findViewById(R.id.assets_detail_entry_date);
+//        TextView assets_detail_deprecia=view.findViewById(R.id.assets_detail_deprecia);
+//        TextView assets_detail_model=view.findViewById(R.id.assets_detail_model);
+//        TextView assets_detail_status=view.findViewById(R.id.assets_detail_status);
+//        TextView assets_detail_remark=view.findViewById(R.id.assets_detail_remark);
+//
+//
+//
+//        //     TextView inspect_detail_write=view.findViewById(R.id.inspect_detail_write);
+//
+//        assets_detail_btn_back.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                popWindowUtils.dissPopupWindow(detailPopWindow);
+//            }
+//        });
+//
+////        inspect_detail_write.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View view) {
+////                Intent intent = new Intent(MainActivity.this, InspectActivity.class);
+////                intent.putExtra("InspectBean", inspectList.get(inspectId));
+////                MainActivity.this.startActivity(intent);
+////            }
+////        });
+//
+//        assets_detail_position.setSingleLine(true);//设置单行显示
+//        assets_detail_position.setHorizontallyScrolling(true);//设置水平滚动效
+//
+//        Log.i("mDatas.size()",mDatas.size()+"");
+//
+//        assets_detail_position.setText(assetsList.get(assetsId).getPosition());
+//        assets_detail_card.setText(assetsList.get(assetsId).getCard());
+//        assets_detail_id.setText(assetsList.get(assetsId).getId());
+//        assets_detail_name.setText(assetsList.get(assetsId).getName());
+//        assets_detail_value.setText(assetsList.get(assetsId).getValue());
+//        assets_detail_address.setText(assetsList.get(assetsId).getAddress());
+//        assets_detail_start_date.setText(assetsList.get(assetsId).getStartdate());
+//        assets_detail_use_year.setText(assetsList.get(assetsId).getUsemonth());
+//        inspect_detail_way.setText(assetsList.get(assetsId).getWay());
+//        assets_detail_use_dep.setText(assetsList.get(assetsId).getUsedep());
+//        assets_detail_entry_date.setText(assetsList.get(assetsId).getEntrydate());
+//        assets_detail_deprecia.setText(assetsList.get(assetsId).getDeprecia());
+//        assets_detail_model.setText(assetsList.get(assetsId).getModel());
+//        assets_detail_status.setText(assetsList.get(assetsId).getStatus());
+//        assets_detail_remark.setText(assetsList.get(assetsId).getRemark());
+//
+//
+//        adapter=new MyRepGridAdapter(this,mDatas);
+//        assets_detail_gridview.setAdapter(adapter);
+//        assets_detail_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Log.i("position", position + "");
+//                Log.i("mDatas.size()", mDatas.size() + "");
+//                imageId = position;
+//
+//                startEditImage(mDatas.get(position));
+//
+//            }
+//
+//        });
+//
+//
+//
+//
+//
+//    }
 
 
 
@@ -1422,8 +1376,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(!"".equals(images)){
             String[] img=images.split(",");
-            for(int i=0;i<img.length;i++){
-                mDatas.add(img[i]);
+            for(String s:img){
+                mDatas.add(s);
             }
         }
 
@@ -1602,14 +1556,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //报修的详情查看
     private void initDetailPop(int reportId) {
-        mDatas.removeAll(mDatas);
+        mDatas.clear();
 
         String images=reportList.get(reportId).getImages();
 
         if(!"".equals(images)){
             String[] img=images.split(",");
-            for(int i=0;i<img.length;i++){
-                mDatas.add(img[i]);
+            for(String s:img){
+                mDatas.add(s);
             }
         }
 
@@ -1812,8 +1766,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(!"".equals(images)){
             String[] img=images.split(",");
-            for(int i=0;i<img.length;i++){
-                mDatas.add(img[i]);
+            for(String s:img){
+                mDatas.add(s);
             }
         }
 
@@ -1983,13 +1937,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ImageView pop_main_inspect_house=inspectView.findViewById(R.id.pop_main_inspect_house);
         ImageView pop_main_inspect_equipment=inspectView.findViewById(R.id.pop_main_inspect_equipment);
-        ImageView pop_main_inspect_property=inspectView.findViewById(R.id.pop_main_inspect_property);
+        ImageView pop_main_inspect_assets=inspectView.findViewById(R.id.pop_main_inspect_assets);
 
 
 
         pop_main_inspect_house.setOnClickListener(this);
         pop_main_inspect_equipment.setOnClickListener(this);
-        pop_main_inspect_property.setOnClickListener(this);
+        pop_main_inspect_assets.setOnClickListener(this);
     }
 
     /**
@@ -2021,64 +1975,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     inspect.putExtra("inspectType","设备");
                     startActivity(inspect);
                 }
+                else{
+                    Intent inspect = new Intent(MainActivity.this, InspectActivity.class);
+                    inspect.putExtra("inspectType","固定资产");
+                    startActivity(inspect);
+                }
 
                 break;
 
-                default:
         }
     }
 
-    //跳转到固定资产提交界面
-    private void startAssetsActivity(){
-        Intent intent=new Intent();
-        intent.setClass(this,AssetsActivity.class);
-        startActivity(intent);
-    }
 
-//    /**
-//     * 动态申请权限
-//     *
-//     * */
-//    public void applyPermission(int requestCode) {
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            Log.i("权限","需要申请权限");
-//            if(this.checkSelfPermission(Manifest.permission.READ_PHONE_STATE)==PackageManager.PERMISSION_GRANTED &&
-//                    this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED&&
-//                    this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED&&
-//                    this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED&&
-//                    this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED) {
-//                Log.i("权限","权限已经获得");
-//                startScan(requestCode);
-//
-//            }
-//            else {
-//                // 申请一个（或多个）权限，并提供用于回调返回的获取码（用户定义）
-//                Log.i("权限","开始申请权限");
-//                requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_COARSE_LOCATION,
-//                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE,
-//                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, requestCode);
-//            }
-//        }
-//        else{
-//            Log.i("权限","不需要申请权限");
-//            startScan(requestCode);
-//        }
-//
-//    }
-
-    /***
+    /*
      * 开始扫码
      *
      */
-    private void startScan(int requestCode) {
+  /*  private void startScan(int requestCode) {
         Intent intent = new Intent(MainActivity.this,
                 CaptureActivity.class);
         startActivityForResult(intent, requestCode);
 
 
     }
-
+*/
     /**
      *
      * 保存头像信息
@@ -2214,60 +2134,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 */
     //删除固定资产记录
-    public void deleteAssets(final String id, final int position,RequestParams params) {
-        myLoadDialog.showLoading("删除", "正在删除中，请稍等...");
-        x.http().post(params, new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                Log.i("result",result);
-                if(!tb_name.equals("mps_attach_del")) {
-                    tb_name = "mps_attach_del";
-                    RequestParams params = new RequestParams(Contans.uri);
-                    params.addBodyParameter("sqlcmd", "mps_attach_del");
-
-                    params.addBodyParameter("ma_billid", id);
-                    params.addBodyParameter("ma_tbname", "mps_assets");
-                    deleteAssets(id, position, params);
-
-
-                }
-                else{
-                    myLoadDialog.hideLoading();
-                    Toast.makeText(MainActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-
-                    assetsList.remove(position);
-                    myAssetsAdapter.notifyDataSetChanged();
-                }
-
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                if (ex instanceof HttpException) { // 网络错误
-                    Toast.makeText(MainActivity.this,"删除失败，请检查网络",Toast.LENGTH_SHORT).show();
-                } else { // 其他错误
-                    Log.i("error","删除出错");
-                    Toast.makeText(MainActivity.this,"删除失败",Toast.LENGTH_SHORT).show();
-                }
-                myLoadDialog.hideLoading();
-             //   Log.i("error","删除出错");
-                if(myInspectAdapter!=null) {
-                    myAssetsAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-                myLoadDialog.hideLoading();
-            }
-
-            @Override
-            public void onFinished() {
-
-            }
-        });
-
-    }
+//    public void deleteAssets(final String id, final int position,RequestParams params) {
+//        myLoadDialog.showLoading("删除", "正在删除中，请稍等...");
+//        x.http().post(params, new Callback.CommonCallback<String>() {
+//            @Override
+//            public void onSuccess(String result) {
+//                Log.i("result",result);
+//                if(!tb_name.equals("mps_attach_del")) {
+//                    tb_name = "mps_attach_del";
+//                    RequestParams params = new RequestParams(Contans.uri);
+//                    params.addBodyParameter("sqlcmd", "mps_attach_del");
+//
+//                    params.addBodyParameter("ma_billid", id);
+//                    params.addBodyParameter("ma_tbname", "mps_assets");
+//                    deleteAssets(id, position, params);
+//
+//
+//                }
+//                else{
+//                    myLoadDialog.hideLoading();
+//                    Toast.makeText(MainActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+//
+//                    assetsList.remove(position);
+//                    myAssetsAdapter.notifyDataSetChanged();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable ex, boolean isOnCallback) {
+//                if (ex instanceof HttpException) { // 网络错误
+//                    Toast.makeText(MainActivity.this,"删除失败，请检查网络",Toast.LENGTH_SHORT).show();
+//                } else { // 其他错误
+//                    Log.i("error","删除出错");
+//                    Toast.makeText(MainActivity.this,"删除失败",Toast.LENGTH_SHORT).show();
+//                }
+//                myLoadDialog.hideLoading();
+//             //   Log.i("error","删除出错");
+//                if(myInspectAdapter!=null) {
+//                    myAssetsAdapter.notifyDataSetChanged();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(CancelledException cex) {
+//                myLoadDialog.hideLoading();
+//            }
+//
+//            @Override
+//            public void onFinished() {
+//
+//            }
+//        });
+//
+//    }
 
 
     //获取维修数据
@@ -2325,21 +2245,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     repairBean.setRepair_state(dsMap.get(key));
                                 }
                                 if(key.equals("r_companyid")) {
-                                    if(dsMap.get(key).equals("201808070001")) {
-                                        repairBean.setReport_firm("中锦公司");
-                                    }
-                                    else if(dsMap.get(key).equals("201808070002")){
-                                        repairBean.setReport_firm("睿华公司");
-                                    }
-                                    else if(dsMap.get(key).equals("201808070003")){
-                                        repairBean.setReport_firm("青羊公司");
-                                    }
-                                    else if(dsMap.get(key).equals("201808070004")){
-                                        repairBean.setReport_firm("金信源公司");
-                                    }
-                                    else{
-                                        repairBean.setReport_firm("土地公司");
-                                    }
+                                    repairBean.setReport_firm(dsMap.get(key));
 
                                 }
                                 if(key.equals("r_type")) {
@@ -2347,7 +2253,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 }
                                 if(key.equals("r_position")) {
 
-                                    repairBean.setReport_address(dsMap.get(key));
+                                    repairBean.setRepair_address(dsMap.get(key));
                                 }
                                 if(key.equals("r_part")) {
 
@@ -2487,21 +2393,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     repairBean.setRepair_state(dsMap.get(key));
                                 }
                                 if(key.equals("r_companyid")) {
-                                    if(dsMap.get(key).equals("201808070001")) {
-                                        repairBean.setReport_firm("中锦公司");
-                                    }
-                                    else if(dsMap.get(key).equals("201808070002")){
-                                        repairBean.setReport_firm("睿华公司");
-                                    }
-                                    else if(dsMap.get(key).equals("201808070003")){
-                                        repairBean.setReport_firm("青羊公司");
-                                    }
-                                    else if(dsMap.get(key).equals("201808070004")){
-                                        repairBean.setReport_firm("金信源公司");
-                                    }
-                                    else{
-                                        repairBean.setReport_firm("土地公司");
-                                    }
+                                    repairBean.setReport_firm(dsMap.get(key));
                                 }
                                 if(key.equals("r_type")) {
 
@@ -2713,164 +2605,164 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
     //获取固定资产数据
-    public void getAssetsData(int index) {
-
-        myLoadDialog.showLoading("获取数据","正在加载数据中，请稍等...");
-        RequestParams params = new RequestParams(Contans.uri);
-        params.addBodyParameter("sqlcmd","moblie_assets_list");
-        params.addBodyParameter("datatype","json");
-        params.addBodyParameter("depid",sp.getString("cu_depid",""));
-        params.addBodyParameter("pagesize","20");
-        params.addBodyParameter("id",sp.getString("cu_userid",""));
-        params.addBodyParameter("pageindex",index+"");
-        params.addBodyParameter("qry","1");
-        params.addBodyParameter("rtnds","2");
-
-
-        x.http().get(params, new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                int count=1;
-                myLoadDialog.hideLoading();
-                Log.i("固定资产",result);
-                jsonMap = JsonUtils.stringToJson(result);
-
-                for(String ds:jsonMap.keySet()){
-                    Log.i("数组",ds);
-                    ArrayList<HashMap<String, String>> list=jsonMap.get(ds);
-                    if(list.size()>0){
-
-                        for(HashMap<String, String> dsMap:list){
-                            AssetsBean assetsBean=new AssetsBean();
-
-                            //取出想要的数据
-                            for(String key:dsMap.keySet()) {
-
-                                if(key.equals("a_id")) {
-
-                                    assetsBean.setId(dsMap.get(key));
-                                }
-                                if(key.equals("images")) {
-
-                                    assetsBean.setImages(dsMap.get(key));
-                                }
-                                if(key.equals("a_card")) {
-
-                                    assetsBean.setCard(dsMap.get(key));
-                                }
-                                if(key.equals("a_value")) {
-
-                                    assetsBean.setValue(dsMap.get(key));
-                                }
-                                if(key.equals("a_deprecia")) {
-
-                                    assetsBean.setDeprecia(dsMap.get(key));
-                                }
-                                if(key.equals("a_tbname")) {
-
-                                    assetsBean.setTbname(dsMap.get(key));
-                                }
-                                if(key.equals("a_number")) {
-
-                                    assetsBean.setNumber(dsMap.get(key));
-                                }
-                                if(key.equals("a_name")) {
-
-                                    assetsBean.setName(dsMap.get(key));
-                                }
-                                if(key.equals("a_startdate")) {
-
-                                    assetsBean.setStartdate(dsMap.get(key));
-                                } if(key.equals("a_usemonth")) {
-
-                                    assetsBean.setUsemonth(dsMap.get(key));
-                                }
-                                if(key.equals("a_way")) {
-
-                                    assetsBean.setWay(dsMap.get(key));
-                                }
-                                if(key.equals("a_usedep")) {
-
-                                    assetsBean.setUsedep(dsMap.get(key));
-                                }
-                                if(key.equals("a_residue")) {
-
-                                    assetsBean.setResidue(dsMap.get(key));
-                                }
-                                if(key.equals("a_entrydate")) {
-
-                                    assetsBean.setEntrydate(dsMap.get(key));
-                                }
-                                if(key.equals("a_address")) {
-
-                                    assetsBean.setAddress(dsMap.get(key));
-                                }
-                                if(key.equals("a_model")) {
-
-                                    assetsBean.setModel(dsMap.get(key));
-                                }
-                                if(key.equals("a_status")) {
-
-                                    assetsBean.setStatus(dsMap.get(key));
-                                }
-                                if(key.equals("a_position")) {
-
-                                   assetsBean.setPosition(dsMap.get(key));
-                                }
-                                if(key.equals("a_remark")) {
-
-                                    assetsBean.setRemark(dsMap.get(key));
-                                }
-
-
-                            }
-                            assetsList.add(assetsBean);
-                            count++;
-                        }
-
-                    }
-                }
-
-                if(count<20){
-                    assetsListView.setPullLoadEnable(false);
-                }
-                else {
-                    assetsListView.setPullLoadEnable(true);
-                }
-                if(myAssetsAdapter!=null) {
-                    myAssetsAdapter.notifyDataSetChanged();
-                }
-
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                myLoadDialog.hideLoading();
-                Log.i("获取数据失败",ex.getMessage());
-                if (ex instanceof HttpException) { // 网络错误
-                    Toast.makeText(MainActivity.this,"获取数据失败，请检查网络",Toast.LENGTH_SHORT).show();
-                } else { // 其他错误
-                    Toast.makeText(MainActivity.this,"获取数据失败",Toast.LENGTH_SHORT).show();
-                }
-                if(myAssetsAdapter!=null) {
-
-                    myAssetsAdapter.notifyDataSetChanged();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-                myLoadDialog.hideLoading();
-            }
-
-            @Override
-            public void onFinished() {
-                myLoadDialog.hideLoading();
-            }
-        });
-
-    }
+//    public void getAssetsData(int index) {
+//
+//        myLoadDialog.showLoading("获取数据","正在加载数据中，请稍等...");
+//        RequestParams params = new RequestParams(Contans.uri);
+//        params.addBodyParameter("sqlcmd","moblie_assets_list");
+//        params.addBodyParameter("datatype","json");
+//        params.addBodyParameter("depid",sp.getString("cu_depid",""));
+//        params.addBodyParameter("pagesize","20");
+//        params.addBodyParameter("id",sp.getString("cu_userid",""));
+//        params.addBodyParameter("pageindex",index+"");
+//        params.addBodyParameter("qry","1");
+//        params.addBodyParameter("rtnds","2");
+//
+//
+//        x.http().get(params, new Callback.CommonCallback<String>() {
+//            @Override
+//            public void onSuccess(String result) {
+//                int count=1;
+//                myLoadDialog.hideLoading();
+//                Log.i("固定资产",result);
+//                jsonMap = JsonUtils.stringToJson(result);
+//
+//                for(String ds:jsonMap.keySet()){
+//                    Log.i("数组",ds);
+//                    ArrayList<HashMap<String, String>> list=jsonMap.get(ds);
+//                    if(list.size()>0){
+//
+//                        for(HashMap<String, String> dsMap:list){
+//                            AssetsBean assetsBean=new AssetsBean();
+//
+//                            //取出想要的数据
+//                            for(String key:dsMap.keySet()) {
+//
+//                                if(key.equals("a_id")) {
+//
+//                                    assetsBean.setId(dsMap.get(key));
+//                                }
+//                                if(key.equals("images")) {
+//
+//                                    assetsBean.setImages(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_card")) {
+//
+//                                    assetsBean.setCard(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_value")) {
+//
+//                                    assetsBean.setValue(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_deprecia")) {
+//
+//                                    assetsBean.setDeprecia(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_tbname")) {
+//
+//                                    assetsBean.setTbname(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_number")) {
+//
+//                                    assetsBean.setNumber(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_name")) {
+//
+//                                    assetsBean.setName(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_startdate")) {
+//
+//                                    assetsBean.setStartdate(dsMap.get(key));
+//                                } if(key.equals("a_usemonth")) {
+//
+//                                    assetsBean.setUsemonth(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_way")) {
+//
+//                                    assetsBean.setWay(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_usedep")) {
+//
+//                                    assetsBean.setUsedep(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_residue")) {
+//
+//                                    assetsBean.setResidue(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_entrydate")) {
+//
+//                                    assetsBean.setEntrydate(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_address")) {
+//
+//                                    assetsBean.setAddress(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_model")) {
+//
+//                                    assetsBean.setModel(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_status")) {
+//
+//                                    assetsBean.setStatus(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_position")) {
+//
+//                                   assetsBean.setPosition(dsMap.get(key));
+//                                }
+//                                if(key.equals("a_remark")) {
+//
+//                                    assetsBean.setRemark(dsMap.get(key));
+//                                }
+//
+//
+//                            }
+//                            assetsList.add(assetsBean);
+//                            count++;
+//                        }
+//
+//                    }
+//                }
+//
+//                if(count<20){
+//                    assetsListView.setPullLoadEnable(false);
+//                }
+//                else {
+//                    assetsListView.setPullLoadEnable(true);
+//                }
+//                if(myAssetsAdapter!=null) {
+//                    myAssetsAdapter.notifyDataSetChanged();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable ex, boolean isOnCallback) {
+//                myLoadDialog.hideLoading();
+//                Log.i("获取数据失败",ex.getMessage());
+//                if (ex instanceof HttpException) { // 网络错误
+//                    Toast.makeText(MainActivity.this,"获取数据失败，请检查网络",Toast.LENGTH_SHORT).show();
+//                } else { // 其他错误
+//                    Toast.makeText(MainActivity.this,"获取数据失败",Toast.LENGTH_SHORT).show();
+//                }
+//                if(myAssetsAdapter!=null) {
+//
+//                    myAssetsAdapter.notifyDataSetChanged();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(CancelledException cex) {
+//                myLoadDialog.hideLoading();
+//            }
+//
+//            @Override
+//            public void onFinished() {
+//                myLoadDialog.hideLoading();
+//            }
+//        });
+//
+//    }
 
     public void applyPermission(int requestCode) {
         if (EasyPermissions.hasPermissions(this, mPermissions)){
@@ -2893,11 +2785,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void after() {
         Log.i("after","调用after()方法");
         myBaiduMap.reStart();
-//        if (EasyPermissions.hasPermissions(this, mPermissions)){
-//            myBaiduMap.reStart();
-//        }else{
-//            EasyPermissions.requestPermissions(this,"请打开定位权限",LOCATION,mPermissions);
-//        }
+
     }
     /**
      *
@@ -2969,22 +2857,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
 
-        Log.i("MainActivity","onResume");
-        Log.i("onResume","isLogin="+isLogin);
-//        if(!isLogin){
-//            main_tv_name.setText("暂无数据");
-//            main_tv_firm.setText("所属单位:暂无数据");
-//        }
         main_tv_name.setText(sp.getString("cu_username","暂无数据"));
         main_tv_firm.setText("所属单位:"+sp.getString("c_name","暂无数据"));
 
-//        rl_top.setFocusable(true);
-//
-//        rl_top.setFocusableInTouchMode(true);
-    //    regeKeyListener(main_searchView);
-//        main_searchView.setFocusable(false);
-//        main_searchView.setFocusableInTouchMode(true);
-  //      main_searchView.clearFocus();
 
         myBaiduMap.reStart();
         mMapView.onResume();

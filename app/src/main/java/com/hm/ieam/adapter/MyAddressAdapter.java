@@ -18,16 +18,20 @@ import com.hm.ieam.utils.MyGlideUtils;
 import java.util.List;
 
 public class MyAddressAdapter extends BaseAdapter{
-    List<AddressBean.AddressItemBean> addressList;
+    List<AddressBean> addressList;
     LayoutInflater layoutInflater;
     Context context;
+    private  int currentItem=-1;
 
-    public MyAddressAdapter(Context context, List<AddressBean.AddressItemBean> addressList) {
+    public MyAddressAdapter(Context context, List<AddressBean> addressList) {
         this.context = context;
         this.addressList=addressList;
 
         layoutInflater = LayoutInflater.from(context);
 
+    }
+    public void setCurrentItem(int currentItem){
+        this.currentItem=currentItem;
     }
     @Override
     public int getCount() {
@@ -61,10 +65,15 @@ public class MyAddressAdapter extends BaseAdapter{
 
         viewHodler.address.setText(addressList.get(position).getN());
 
-//        if (position == selectItem) {
-//            Log.i("textcolor","改变颜色");
-//            viewHodler.address.setTextColor(Color.GREEN);
-//        }
+        if(currentItem==position){
+            Log.i("currentItem is",currentItem+"");
+            viewHodler.address.setSelected(true);
+            viewHodler.address.setTextColor(context.getResources().getColor(R.color.green));
+        }
+        else{
+            viewHodler.address.setSelected(false);
+            viewHodler.address.setTextColor(context.getResources().getColor(R.color.black));
+        }
 
 
         return convertView;

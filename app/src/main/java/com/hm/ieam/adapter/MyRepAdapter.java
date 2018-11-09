@@ -69,7 +69,7 @@ public class MyRepAdapter extends BaseAdapter {
             viewHodler = (ViewHodler) convertView.getTag();
         }
 
-        Log.i("适配器的position和size",position+"与"+list.size());
+  //      Log.i("适配器的position和size",position+"与"+list.size());
 
         final RepairBean repairBean = list.get(position);
         String[] images = repairBean.getImages().split(",");

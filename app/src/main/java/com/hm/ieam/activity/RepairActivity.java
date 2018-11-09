@@ -177,8 +177,8 @@ public class RepairActivity extends AppCompatActivity implements View.OnClickLis
 
         if(!"".equals(images)){
             String[] img=images.split(",");
-            for(int i=0;i<img.length;i++){
-                mDatas.add(img[i]);
+            for(String s:img){
+                mDatas.add(s);
             }
         }
 
@@ -383,7 +383,7 @@ public class RepairActivity extends AppCompatActivity implements View.OnClickLis
         params.addBodyParameter("qry","1");
         params.addBodyParameter("rtnds","2");
         params.addBodyParameter("state",p_state);
-        Log.i("state","这里是前面一部");
+
         x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -428,21 +428,8 @@ public class RepairActivity extends AppCompatActivity implements View.OnClickLis
                                 }
                                 if(key.equals("r_companyid")) {
 
-                                    if(dsMap.get(key).equals("201808070001")) {
-                                        repairBean.setReport_firm("中锦公司");
-                                    }
-                                    else if(dsMap.get(key).equals("201808070002")){
-                                        repairBean.setReport_firm("睿华公司");
-                                    }
-                                    else if(dsMap.get(key).equals("201808070003")){
-                                        repairBean.setReport_firm("青羊公司");
-                                    }
-                                    else if(dsMap.get(key).equals("201808070004")){
-                                        repairBean.setReport_firm("金信源公司");
-                                    }
-                                    else{
-                                        repairBean.setReport_firm("土地整理公司");
-                                    }
+                                    repairBean.setReport_firm(dsMap.get(key));
+
                                 }
                                 if(key.equals("r_type")) {
 

@@ -30,7 +30,7 @@
 
         />
     <ImageView
-        android:id="@+id/pop_main_inspect_property"
+        android:id="@+id/pop_main_inspect_assets"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="@drawable/main_pop_btn"
